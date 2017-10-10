@@ -2,7 +2,7 @@ package com.xantech.mtgcardcollection.view.ui;
 
 public class Help {
 
-    private Help(){};
+    private Help(){}
 
     public static String HTML()
     {
@@ -21,9 +21,13 @@ public class Help {
                 "       <br><br><br>\n" +
                 "       <a href=\"/updateCollectionValues\">Update Collection Values...</a><br>\n" +
                 "       <a href=\"/cardValueSummary?format=CARD\">Card Value Summary: Sort by Card Name...</a><br>\n" +
+                "       <a href=\"/cardValueSummary?format=CARD&override=TRUE\">Card Value Summary: Sort by Card Name...(Override)</a><br>\n" +
                 "       <a href=\"/cardValueSummary?format=BLOCK-CARD\">Card Value Summary: Sort by Block, then Card...</a><br>\n" +
                 "       <a href=\"/cardValueSummary?format=PRICE\">Card Value Summary: Sort by Price...</a><br>\n" +
-                "       <a href=\"/cardValueSummary?format=VALUE-CHANGE\">Card Value Summary: Sort by Value Change...</a><br>\n" +
+                "       <a href=\"/cardValueSummary?format=DAY-VALUE-CHANGE\">Card Value Summary: Sort by Value Change Over Past Day...</a><br>\n" +
+                "       <a href=\"/cardValueSummary?format=7-DAY-VALUE-CHANGE\">Card Value Summary: Sort by Value Change Over Past 7 Days...</a><br>\n" +
+                "       <a href=\"/cardValueSummary?format=30-DAY-VALUE-CHANGE\">Card Value Summary: Sort by Value Change Over Past 30 Days...</a><br>\n" +
+                "       <a href=\"/cardValueSummary?format=ALL-TIME-VALUE-CHANGE\">Card Value Summary: Sort by Value Change Over Entire History...</a><br>\n" +
                 "   </body>\n" +
                 "</html>";
     }

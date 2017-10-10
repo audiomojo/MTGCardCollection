@@ -14,11 +14,11 @@ public class CardValueSummary {
         this.format = format;
     }
 
-    public String CardValueSummaryReportHTML()
+    public String CardValueSummaryReportHTML(String override)
     {
         StringBuilder cardValueSummaryReportHTML = new StringBuilder();
         CardCollection cardCollection = new CardCollection();
-        cardCollection.UpdateCollectionValues();
+        cardCollection.UpdateCollectionValues(override);
         cardCollection.SortCollection(format);
         double totalCollectionValue = 0.0;
 
@@ -40,6 +40,12 @@ public class CardValueSummary {
             cardValueSummaryReportHTML.append("Value: $" + cardValue + "<br>");
             cardValueSummaryReportHTML.append("24-Hour Value Shift: " + TextFormatting.FormatAsUSD(card.getCardValueMetrics().getTwentyFourHourValueShift()) + "<br>");
             cardValueSummaryReportHTML.append("24-Hour % Shift: " + TextFormatting.FormatAsPercentage(card.getCardValueMetrics().getTwentyFourHourPercentageShift()) + "<br>");
+            cardValueSummaryReportHTML.append("7-Day Value Shift: " + TextFormatting.FormatAsUSD(card.getCardValueMetrics().getSevenDayValueShift()) + "<br>");
+            cardValueSummaryReportHTML.append("7-Day % Shift: " + TextFormatting.FormatAsPercentage(card.getCardValueMetrics().getSevenDayHourPercentageShift()) + "<br>");
+            cardValueSummaryReportHTML.append("30-Day Value Shift: " + TextFormatting.FormatAsUSD(card.getCardValueMetrics().getThirtyDayValueShift()) + "<br>");
+            cardValueSummaryReportHTML.append("30-Day % Shift: " + TextFormatting.FormatAsPercentage(card.getCardValueMetrics().getThirtyDayPercentageShift()) + "<br>");
+            cardValueSummaryReportHTML.append("All History Value Shift: " + TextFormatting.FormatAsUSD(card.getCardValueMetrics().getAllTimeValueShift()) + "<br>");
+            cardValueSummaryReportHTML.append("All History % Shift: " + TextFormatting.FormatAsPercentage(card.getCardValueMetrics().getAllTimePercentageShift()) + "<br>");
             cardValueSummaryReportHTML.append("Collection Value: " + TextFormatting.FormatAsUSD(cardValue * card.getQuantity()) + "<br>");
             cardValueSummaryReportHTML.append("<br><br>");
         }

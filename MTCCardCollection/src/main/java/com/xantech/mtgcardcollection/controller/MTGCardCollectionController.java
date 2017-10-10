@@ -1,9 +1,10 @@
-package com.xantech.mtgcardcollection.view.ui;
+package com.xantech.mtgcardcollection.controller;
 
 import com.xantech.mtgcardcollection.data.collections.CardCollection;
 import com.xantech.mtgcardcollection.view.reports.CardValueSummary;
 import com.xantech.mtgcardcollection.actions.ParseCard;
 import com.xantech.mtgcardcollection.helpers.ScreenScrapeCardValue;
+import com.xantech.mtgcardcollection.view.ui.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,13 +34,14 @@ public class MTGCardCollectionController {
     }
 
     @RequestMapping("/cardValueSummary")
-    public String cardValueSummary(@RequestParam(value="format", defaultValue = "CARD") String format) {
-        return new CardValueSummary(format).CardValueSummaryReportHTML();
+    public String cardValueSummary(@RequestParam(value="format", defaultValue = "CARD") String format,
+                                   @RequestParam(value="override", defaultValue="FALSE") String override) {
+        return new CardValueSummary(format).CardValueSummaryReportHTML(override);
     }
 
     @RequestMapping("/updateCollectionValues")
-    public String updateCollectionValues() {
-        return new CardCollection().UpdateCollectionValues();
+    public String updateCollectionValues(@RequestParam(value="override", defaultValue="FALSE") String override) {
+        return new CardCollection().UpdateCollectionValues(override);
     }
 
     @RequestMapping("/debugCardCollection")

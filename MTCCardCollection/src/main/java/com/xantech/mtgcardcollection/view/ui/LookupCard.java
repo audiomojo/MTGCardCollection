@@ -2,7 +2,7 @@ package com.xantech.mtgcardcollection.view.ui;
 
 public class LookupCard {
 
-    private LookupCard(){};
+    private LookupCard(){}
 
     public static String HTML()
     {
@@ -19,7 +19,7 @@ public class LookupCard {
                 "    <input type=\"hidden\" name=\"quantity\" value=\"0\">\n" +
                 "    <input type=\"text\" name=\"url\" value=\"\" style=\"width:1000px;\">\n" +
                 "    <br><br><br>\n" +
-                "    <input type=\"submit\" value=\"AddCard Card to Collection\">\n" +
+                "    <input type=\"submit\" value=\"Lookup Card in Collection\">\n" +
                 "  </form>\n" +
                 "</body>\n" +
                 "</html>";

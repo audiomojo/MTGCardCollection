@@ -18,7 +18,7 @@ public class ValueHistory implements Serializable {
         history = new ArrayList<>();
     }
 
-    public boolean HasValueEntryForDate(Date date, ValueNode nodeCandidate)
+    private boolean HasValueEntryForDate(Date date, ValueNode nodeCandidate)
     {
         boolean result = false;
 
@@ -57,24 +57,61 @@ public class ValueHistory implements Serializable {
     }
 
     public double Get24HourValueShift() {
+        return CalculateValueShift(1);
+    }
+
+    public double Get24HourPercentageShift() {
+        return CalculatePercentageShift(1);
+    }
+
+    public double Get7DayValueShift() {
+        return CalculateValueShift(7);
+    }
+
+    public double Get7DayPercentageShift() {
+        return CalculatePercentageShift(7);
+    }
+
+    public double Get30DayValueShift() {
+        return CalculateValueShift(30);
+    }
+
+    public double Get30DayPercentageShift() {
+        return CalculatePercentageShift(30);
+    }
+
+    public double GetAllTimeValueShift() {
+        ValueNode mostRecentNode = history.get(history.size()-1);
+        ValueNode priorNode = history.get(0);
+        return mostRecentNode.getValue() - priorNode.getValue();
+    }
+
+    public double GetAllTimePercentageShift()
+    {
+        ValueNode mostRecentNode = history.get(history.size()-1);
+        ValueNode priorNode = history.get(0);
+        return mostRecentNode.getValue()/priorNode.getValue()-1;
+    }
+
+    private double CalculatePercentageShift(int days){
         double response = 0.0;
-        if(history.size() >= 2)
+        if(history.size() >= days+1)
         {
             ValueNode mostRecentNode = history.get(history.size()-1);
-            ValueNode priorNode = history.get(history.size()-2);
-            response = mostRecentNode.getValue() - priorNode.getValue();
+            ValueNode priorNode = history.get(history.size()-(days+1));
+            response = mostRecentNode.getValue()/priorNode.getValue()-1;
         }
 
         return response;
     }
 
-    public double Get24HourPercentageShift() {
+    private double CalculateValueShift(int days){
         double response = 0.0;
-        if(history.size() >= 2)
+        if(history.size() >= days+1)
         {
             ValueNode mostRecentNode = history.get(history.size()-1);
-            ValueNode priorNode = history.get(history.size()-2);
-            response = mostRecentNode.getValue()/priorNode.getValue()-1;
+            ValueNode priorNode = history.get(history.size()-(days+1));
+            response = mostRecentNode.getValue() - priorNode.getValue();
         }
 
         return response;

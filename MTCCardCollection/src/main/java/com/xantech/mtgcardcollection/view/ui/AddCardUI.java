@@ -2,7 +2,7 @@ package com.xantech.mtgcardcollection.view.ui;
 
 public class AddCardUI {
 
-    private AddCardUI(){};
+    private AddCardUI(){}
 
     public static String HTML()
     {
@@ -23,7 +23,7 @@ public class AddCardUI {
                 "    <input type=\"text\" name=\"quantity\" value=\"1\">\n" +
                 "    <br>\n" +
                 "    <br><br><br>\n" +
-                "    <input type=\"submit\" value=\"AddCard Card to Collection\">\n" +
+                "    <input type=\"submit\" value=\"Add Card to Collection\">\n" +
                 "  </form>\n" +
                 "</body>\n" +
                 "</html>";

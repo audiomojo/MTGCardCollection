@@ -4,7 +4,6 @@ import com.xantech.mtgcardcollection.data.objects.Card;
 import lombok.Data;
 
 import java.io.*;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -64,7 +63,7 @@ public class CardCollection implements java.io.Serializable {
         return null;
     }
 
-    public static CardCollection LoadCollection() {
+    private static CardCollection LoadCollection() {
         CardCollection cardCollection = null;
 
         try{
@@ -122,15 +121,23 @@ public class CardCollection implements java.io.Serializable {
 //        return collectionCopy;
 //    }
 
-    public String UpdateCollectionValues() {
+    public String UpdateCollectionValues(String override) {
         Date checkTime = new Date();
 
-        if ((lastValueCheck == null) || (checkTime.getTime() - lastValueCheck.getTime() > 300000)) {
+        // 1 hour = 3600000
+        // 3 hours = 10800000
+        // 6 hours = 21600000
+        if ((lastValueCheck == null) || (override.compareTo("TRUE") == 0) || (checkTime.getTime() - lastValueCheck.getTime() > 10800000)) {
             for (Card card : collection) {
                 card.MeasureValue();
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException ex) {
+                    System.out.println("Thread Exception: " + ex.toString());
+                }
+                lastValueCheck = checkTime;
+                SaveCollection();
             }
-            lastValueCheck = checkTime;
-            SaveCollection();
         }
         return collection.toString();
     }
@@ -193,8 +200,14 @@ public class CardCollection implements java.io.Serializable {
             SortBlockCard();
         else if (format.compareTo("PRICE") == 0)
             SortPrice();
-        else if (format.compareTo("VALUE-CHANGE") == 0)
-            SortValueChange();
+        else if (format.compareTo("DAY-VALUE-CHANGE") == 0)
+            SortDayValueChange();
+        else if (format.compareTo("7-DAY-VALUE-CHANGE") == 0)
+            Sort7DayValueChange();
+        else if (format.compareTo("30-DAY-VALUE-CHANGE") == 0)
+            Sort30DayValueChange();
+        else if (format.compareTo("ALL-TIME-VALUE-CHANGE") == 0)
+            SortAllTimeValueChange();
         else {
             SortCard();
             SaveCollection();
@@ -213,8 +226,20 @@ public class CardCollection implements java.io.Serializable {
         Collections.sort(collection, new SortByPrice());
     }
 
-    private void SortValueChange() {
-        Collections.sort(collection, new SortByValueChange());
+    private void SortDayValueChange() {
+        Collections.sort(collection, new SortByDayValueChange());
+    }
+
+    private void Sort7DayValueChange() {
+        Collections.sort(collection, new SortBy7DayValueChange());
+    }
+
+    private void Sort30DayValueChange() {
+        Collections.sort(collection, new SortBy30DayValueChange());
+    }
+
+    private void SortAllTimeValueChange() {
+        Collections.sort(collection, new SortByAllTimeValueChange());
     }
 
     public Card LookupCard(String block, String cardName, String format) {
@@ -258,11 +283,38 @@ class SortByPrice implements Comparator<Card>
     }
 }
 
-class SortByValueChange implements Comparator<Card>
+class SortByDayValueChange implements Comparator<Card>
 {
     public int compare(Card card1, Card card2)
     {
         double sortValue = card2.getValueHistory().Get24HourValueShift()*100 - card1.getValueHistory().Get24HourValueShift()*100;
+        return (int) sortValue;
+    }
+}
+
+class SortBy7DayValueChange implements Comparator<Card>
+{
+    public int compare(Card card1, Card card2)
+    {
+        double sortValue = card2.getValueHistory().Get7DayValueShift()*100 - card1.getValueHistory().Get7DayValueShift()*100;
+        return (int) sortValue;
+    }
+}
+
+class SortBy30DayValueChange implements Comparator<Card>
+{
+    public int compare(Card card1, Card card2)
+    {
+        double sortValue = card2.getValueHistory().Get30DayValueShift()*100 - card1.getValueHistory().Get30DayValueShift()*100;
+        return (int) sortValue;
+    }
+}
+
+class SortByAllTimeValueChange implements Comparator<Card>
+{
+    public int compare(Card card1, Card card2)
+    {
+        double sortValue = card2.getValueHistory().GetAllTimeValueShift()*100 - card1.getValueHistory().GetAllTimeValueShift()*100;
         return (int) sortValue;
     }
 }

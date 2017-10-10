@@ -46,6 +46,12 @@ public class Card implements Serializable {
             cardValueMetrics = new CardValueMetrics();
         cardValueMetrics.setTwentyFourHourValueShift(valueHistory.Get24HourValueShift());
         cardValueMetrics.setTwentyFourHourPercentageShift(valueHistory.Get24HourPercentageShift());
+        cardValueMetrics.setSevenDayValueShift(valueHistory.Get7DayValueShift());
+        cardValueMetrics.setSevenDayHourPercentageShift(valueHistory.Get7DayPercentageShift());
+        cardValueMetrics.setThirtyDayValueShift(valueHistory.Get30DayValueShift());
+        cardValueMetrics.setThirtyDayPercentageShift(valueHistory.Get30DayPercentageShift());
+        cardValueMetrics.setAllTimeValueShift(valueHistory.GetAllTimeValueShift());
+        cardValueMetrics.setAllTimePercentageShift(valueHistory.GetAllTimePercentageShift());
         return value;
     }
 
