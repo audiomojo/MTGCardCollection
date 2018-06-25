@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>MTG Card Collection</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<!--[if lte IE 8]><script th:src="@{/css/ie/html5shiv.js"}></script><![endif]-->
+		<script th:src="@{/js/jquery.min.js}"></script>
+		<script th:src="@{/js/skel.min.js}"></script>
+		<script th:src="@{/js/skel-layers.min.js}"></script>
+		<script th:src="@{/js/init.js}"></script>
+		<script th:src="@{/js/collection-summary.js}"></script>
+		<noscript>
+			<link rel="stylesheet" type="text/css" href="../static/css/skel.css" th:href="@{/css/skel.css}"/>
+			<link rel="stylesheet" type="text/css" href="../static/css/style.css" th:href="@{/css/style.css}"/>
+			<link rel="stylesheet" type="text/css" href="../static/css/style-xlarge.css" th:href="@{/css/style-xlarge.css}" />
+		</noscript>
+	</head>
+	<body>
+
+		<!-- Header -->
+			<header id="header">
+				<h1><a href="index.html">MTG Card Collection</a></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="index.html">Home</a></li>
+						<li><a href="elements.html">Elements</a></li>
+					</ul>
+				</nav>
+			</header>
+
+		<!-- Main -->
+			<section id="main" class="wrapper">
+				<div class="container">
+
+					<header class="major">
+						<h2>Collection Summary</h2>
+						<p>Sorted by 24 Hour Value Change</p>
+					</header>
+
+
+					<!-- Table -->
+						<section>
+							<div class="table-wrapper">
+								<table id="mtg-collection">
+									<thead>
+										<tr>
+											<th>Card</th>
+											<th>Block</th>
+											<th>Value</th>
+											<th>Quantity</th>
+											<th>Collection Value</th>
+											<th>24 Hour $Δ</th>
+											<th>24 Hour %Δ</th>
+											<th>7 Day $Δ</th>
+											<th>7 Day %Δ</th>
+											<th>30 Day $Δ</th>
+											<th>30 Day %Δ</th>
+											<th>All Time $Δ</th>
+											<th>All Time %Δ</th>
+										</tr>
+									</thead>
+									<tbody>
+										<th:block th:each="card : ${cardCollection}">
+											<tr>
+												<td th:text="${card.card}"></td>
+												<td th:text="${card.block}"></td>
+												<td th:text="${card.value}"></td>
+												<td th:text="${card.quantity}"></td>
+												<td th:text="${card.totalValue}"></td>
+												<td th:text="${card.twentyFourHourValueShift}"></td>
+												<td th:text="${card.twentyFourHourPercentageShift}"></td>
+												<td th:text="${card.sevenDayValueShift}"></td>
+												<td th:text="${card.sevenDayPercentageShift}"></td>
+												<td th:text="${card.thirtyDayValueShift}"></td>
+												<td th:text="${card.thirtyDayPercentageShift}"></td>
+												<td th:text="${card.allTimeValueShift}"></td>
+												<td th:text="${card.allTimePercentageShift}"></td>
+											</tr>
+										</th:block>
+									</tbody>
+									<tfoot>
+										<tr>
+											<td colspan="4"></td>
+											<td>100.00</td>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+						</section>
+				</div>
+			</section>
+		<!-- Footer -->
+        <script>
+            FormatValueShifts();
+        </script>
+    </body>
+</html>

@@ -24,14 +24,11 @@ public class ScreenScrapeCardValue {
         this.assembledURL = "https://www.mtggoldfish.com/price/".concat(this.block).concat("/").concat(this.card).concat("#").concat(this.format);
     }
 
-    public String getPrice() { return scrapePrice(); }
-
-    public String scrapePrice() {
+    public String getPrice() {
         Document document;
         String price = "0.0";
 
         try {
-            System.out.println("Fetching Price: " + assembledURL);
             document = Jsoup.connect(assembledURL).get();
             Elements priceDiv;
 

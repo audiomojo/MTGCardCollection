@@ -1,6 +1,7 @@
 package com.xantech.mtgcardcollection.data.collections;
 
 import com.xantech.mtgcardcollection.data.objects.Card;
+import com.xantech.mtgcardcollection.data.objects.CardViewModel;
 import lombok.Data;
 
 import java.io.*;
@@ -13,6 +14,7 @@ import java.util.Date;
 public class CardCollection implements java.io.Serializable {
     private static final long serialVersionUID = 726528664611708250L;
     private int identity;
+    private double collectionValue;
     private Date lastValueCheck;
     private ArrayList<Card> collection = null;
 
@@ -127,11 +129,16 @@ public class CardCollection implements java.io.Serializable {
         // 1 hour = 3600000
         // 3 hours = 10800000
         // 6 hours = 21600000
+
+        int index = 0;
         if ((lastValueCheck == null) || (override.compareTo("TRUE") == 0) || (checkTime.getTime() - lastValueCheck.getTime() > 10800000)) {
+            collectionValue = 0.0;
             for (Card card : collection) {
+                System.out.println(index++ + " of " + collection.size() + " : " + card.toString());
                 card.MeasureValue();
+                collectionValue += card.GetCardValue()*card.getQuantity();
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(250);
                 } catch (InterruptedException ex) {
                     System.out.println("Thread Exception: " + ex.toString());
                 }
@@ -194,6 +201,21 @@ public class CardCollection implements java.io.Serializable {
         }
         return result;
     }
+
+    public ArrayList<CardViewModel> GetModel(String format, String override) {
+        UpdateCollectionValues(override);
+        SortCollection(format);
+        return GetModelCollection();
+    }
+
+    private ArrayList<CardViewModel> GetModelCollection() {
+        ArrayList<CardViewModel> cardViewModels = new ArrayList<>();
+        for (Card card : collection) {
+            cardViewModels.add(new CardViewModel(card));
+        }
+        return cardViewModels;
+    }
+
 
     public void SortCollection(String format){
         if (format.compareTo("BLOCK-CARD") == 0)
@@ -278,7 +300,7 @@ class SortByPrice implements Comparator<Card>
 {
     public int compare(Card card1, Card card2)
     {
-        double sortValue = card1.getValueHistory().GetTodaysValue().getValue()*100 - card2.getValueHistory().GetTodaysValue().getValue()*100;
+            double sortValue = card1.getValueHistory().GetTodaysValue().getValue()*100 - card2.getValueHistory().GetTodaysValue().getValue()*100;
         return (int) sortValue*-1;
     }
 }

@@ -56,7 +56,7 @@ public class Card implements Serializable {
     }
 
     public double GetCardValue() {
-        double cardValue = 0.0;
+        double cardValue;
 
         ValueNode valueNode = valueHistory.GetTodaysValue();
         if (valueNode != null)
