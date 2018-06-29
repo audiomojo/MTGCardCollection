@@ -1,10 +1,12 @@
 package com.xantech.mtgcardcollection.controllers;
 
-import com.xantech.mtgcardcollection.dao.MTGCard;
+import com.xantech.mtgcardcollection.dao.MTGUser;
 import com.xantech.mtgcardcollection.data.collections.CardCollection;
 import com.xantech.mtgcardcollection.dto.MTGCardDTO;
 import com.xantech.mtgcardcollection.enums.CollectionAdjustment;
 import com.xantech.mtgcardcollection.services.DatabaseService;
+import com.xantech.mtgcardcollection.services.MTGCollectionReportService;
+import com.xantech.mtgcardcollection.services.MTGUserService;
 import com.xantech.mtgcardcollection.view.reports.CardValueSummary;
 import com.xantech.mtgcardcollection.services.MTGCardService;
 import com.xantech.mtgcardcollection.helpers.ScreenScrapeCardValue;
@@ -24,6 +26,12 @@ public class MTGCardCollectionController {
     @Autowired
     MTGCardService mtgCardService;
 
+    @Autowired
+    MTGUserService mtgUserService;
+
+    @Autowired
+    MTGCollectionReportService mtgCollectionReportService;
+
     @RequestMapping("/cardvalue")
     public ScreenScrapeCardValue screenScrapeCardValue(@RequestParam(value="block", defaultValue="Return+to+Ravnica") String block,
                                                        @RequestParam(value="Card", defaultValue="Jace+Architect+of+Thought") String card,
@@ -35,14 +43,22 @@ public class MTGCardCollectionController {
     public MTGCardDTO processAddCard(@RequestParam(value="url") String url,
                                      @RequestParam(value="quantity") String quantity,
                                      @RequestParam(value="notes") String notes){
-        return  mtgCardService.AdjustCollection(CollectionAdjustment.ADD, url, Integer.parseInt(quantity), notes);
+        return  mtgCardService.AdjustCollection(CollectionAdjustment.ADD, url, Integer.parseInt(quantity), notes, mtgUserService.GetUser());
     }
 
     @RequestMapping("/deleteCard")
     public MTGCardDTO processDeleteCard(@RequestParam(value="url") String url,
                                         @RequestParam(value="quantity") String quantity,
                                         @RequestParam(value="notes") String notes){
-        return  mtgCardService.AdjustCollection(CollectionAdjustment.REMOVE, url, Integer.parseInt(quantity), notes);
+        return  mtgCardService.AdjustCollection(CollectionAdjustment.REMOVE, url, Integer.parseInt(quantity), notes, mtgUserService.GetUser());
+    }
+
+    @RequestMapping("/addUser")
+    public MTGUser addUser(@RequestParam(value="userName") String userName,
+                           @RequestParam(value="email") String email,
+                           @RequestParam(value="mobile") String mobile,
+                           @RequestParam(value="password") String password) {
+        return mtgUserService.AddUser(userName, email, mobile, password);
     }
 
     @RequestMapping("/collectionSummary")
@@ -55,7 +71,7 @@ public class MTGCardCollectionController {
     public ModelAndView cardValueSummaryMVC(@RequestParam(value="format", defaultValue = "CARD") String format,
                                    @RequestParam(value="override", defaultValue="FALSE") String override) {
         ModelAndView mav = new ModelAndView("collection-summary");
-        mav.addObject("cardCollection", new CardCollection().GetModel(format, override));
+        mav.addObject("cardCollection", mtgCollectionReportService.GetModel(format, override, mtgUserService.GetUser()));
         return mav;
     }
 
@@ -64,10 +80,10 @@ public class MTGCardCollectionController {
         return new CardCollection().UpdateCollectionValues(override);
     }
 
-    @RequestMapping("/debugCardCollection")
-    public String Debug() {
-        return new CardCollection().DebugCardCollection();
-    }
+//    @RequestMapping("/debugCardCollection")
+//    public String Debug() {
+//        return new CardCollection().DebugCardCollection();
+//    }
 
     @RequestMapping("/decrementCardCount")
     public String decrementCardCount() { return DecrementCardCountUI.HTML(); }

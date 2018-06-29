@@ -30,7 +30,7 @@ public class DatabaseService {
             mtgCard.setBlock(card.getBlock());
             mtgCard.setCard(card.getCard());
             mtgCard.setFormat(card.getFormat());
-            mtgCard.setQuantity(card.getQuantity());
+            //mtgCard.setQuantity(card.getQuantity());
             mtgCard.setTwentyFourHourValueShift(card.getCardValueMetrics().getTwentyFourHourValueShift());
             mtgCard.setTwentyFourHourPercentageShift(card.getCardValueMetrics().getTwentyFourHourPercentageShift());
             mtgCard.setSevenDayValueShift(card.getCardValueMetrics().getSevenDayValueShift());

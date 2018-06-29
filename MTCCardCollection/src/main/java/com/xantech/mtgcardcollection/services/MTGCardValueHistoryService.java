@@ -1,8 +1,6 @@
 package com.xantech.mtgcardcollection.services;
 
-import com.xantech.mtgcardcollection.dao.MTGCard;
-import com.xantech.mtgcardcollection.dao.MTGCardValueHistory;
-import com.xantech.mtgcardcollection.dao.MTGCardValueHistoryRepository;
+import com.xantech.mtgcardcollection.dao.*;
 import com.xantech.mtgcardcollection.helpers.MTGGoldFishCardValueEngine;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +19,12 @@ public class MTGCardValueHistoryService {
     @Autowired
     MTGCardValueHistoryRepository mtgCardValueHistoryRepository;
 
+    @Autowired
+    MTGCardRepository mtgCardRepository;
+
     private MTGCardValueHistory mtgCardValueHistory;
 
-    public MTGCardValueHistory updateCardValue(MTGCard mtgCard) {
+    public MTGCardValueHistory updateCardValue(MTGCard mtgCard, Date date) {
 
         double cardValue = mtgGoldFishCardValueEngine.getCardValue(mtgCard);
 
@@ -32,12 +33,15 @@ public class MTGCardValueHistoryService {
         if ((mtgCardValueHistory == null) || (SameDay(mtgCardValueHistory.getDate()) == false)) {
             mtgCardValueHistory = new MTGCardValueHistory();
             mtgCardValueHistory.setCardID(mtgCard.getId());
-            mtgCardValueHistory.setCreatedDate(mtgCard.getModifiedDate());
-            mtgCardValueHistory.setDate(mtgCard.getModifiedDate());
+            mtgCardValueHistory.setCreatedDate(date);
+            mtgCardValueHistory.setDate(date);
         }
 
-        mtgCardValueHistory.setModifiedDate(mtgCard.getModifiedDate());
+        mtgCardValueHistory.setModifiedDate(date);
         mtgCardValueHistory.setValue(cardValue);
+        mtgCard.setMostRecentValue(cardValue);
+        mtgCard.setLastValueCheck(date);
+        mtgCardRepository.save(mtgCard);
         mtgCardValueHistoryRepository.save(mtgCardValueHistory);
 
         return mtgCardValueHistory;

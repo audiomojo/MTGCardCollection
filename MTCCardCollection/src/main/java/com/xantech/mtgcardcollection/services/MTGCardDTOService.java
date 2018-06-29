@@ -3,6 +3,7 @@ package com.xantech.mtgcardcollection.services;
 import com.xantech.mtgcardcollection.dao.MTGCard;
 import com.xantech.mtgcardcollection.dao.MTGCardValueHistory;
 import com.xantech.mtgcardcollection.dao.MTGCardValueHistoryRepository;
+import com.xantech.mtgcardcollection.dao.MTGCollectionAsset;
 import com.xantech.mtgcardcollection.dto.MTGCardDTO;
 import com.xantech.mtgcardcollection.dto.MTGCardValueHistoryDTO;
 import lombok.Data;
@@ -21,11 +22,9 @@ public class MTGCardDTOService {
 
     private MTGCardDTO mtgCardDTO;
 
-    public MTGCardDTO AssembleMTGCardDTO(MTGCard mtgCard) {
-        CopyMTGCard(mtgCard);
-
+    public MTGCardDTO AssembleMTGCardDTO(MTGCard mtgCard, MTGCollectionAsset mtgCollectionAsset) {
+        CopyMTGCard(mtgCard, mtgCollectionAsset);
         CopyMTGCardValueHistoryList(mtgCard);
-
         return mtgCardDTO;
     }
 
@@ -48,12 +47,12 @@ public class MTGCardDTOService {
         return mtgCardValueHistoryDTO;
     }
 
-    private void CopyMTGCard(MTGCard mtgCard) {
+    private void CopyMTGCard(MTGCard mtgCard, MTGCollectionAsset mtgCollectionAsset) {
         mtgCardDTO = new MTGCardDTO();
         mtgCardDTO.setBlock(mtgCard.getBlock());
         mtgCardDTO.setCard(mtgCard.getCard());
         mtgCardDTO.setFormat(mtgCard.getFormat());
-        mtgCardDTO.setQuantity(mtgCard.getQuantity());
+        mtgCardDTO.setQuantity(mtgCollectionAsset.getQuantity());
         mtgCardDTO.setTwentyFourHourValueShift(mtgCard.getTwentyFourHourValueShift());
         mtgCardDTO.setTwentyFourHourPercentageShift(mtgCard.getTwentyFourHourPercentageShift());
         mtgCardDTO.setSevenDayValueShift(mtgCard.getSevenDayValueShift());
@@ -63,6 +62,6 @@ public class MTGCardDTOService {
         mtgCardDTO.setAllTimeValueShift(mtgCard.getAllTimeValueShift());
         mtgCardDTO.setAllTimePercentageShift(mtgCard.getAllTimePercentageShift());
         mtgCardDTO.setMtgGoldfishURL(mtgCard.getMtgGoldfishURL());
-        mtgCardDTO.setNotes(mtgCard.getNotes());
+        mtgCardDTO.setNotes(mtgCollectionAsset.getNotes());
     }
 }

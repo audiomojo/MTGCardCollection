@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import java.util.Date;
 
 @Entity
 @Data
@@ -15,7 +16,6 @@ public class MTGCard extends AbstractEntity {
     private String block;
     private String card;
     private String format;
-    private int quantity;
     private double twentyFourHourValueShift;
     private double twentyFourHourPercentageShift;
     private double sevenDayValueShift;
@@ -25,8 +25,6 @@ public class MTGCard extends AbstractEntity {
     private double allTimeValueShift;
     private double allTimePercentageShift;
     private String mtgGoldfishURL;
-    @Lob
-    private String notes;
-    @Lob
-    private String transactionHistory;
+    private Date lastValueCheck;
+    private double mostRecentValue;
 }

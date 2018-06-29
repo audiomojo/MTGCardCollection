@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MTGCardValueHistoryRepository  extends JpaRepository<MTGCardValueHistory, Long> {
+public interface MTGCardValueHistoryRepository extends JpaRepository<MTGCardValueHistory, Long> {
     List<MTGCardValueHistory> findAllByCardIDOrderByModifiedDateDesc(long cardID);
     MTGCardValueHistory findTopByCardIDOrderByModifiedDateDesc(long cardID);
 }
