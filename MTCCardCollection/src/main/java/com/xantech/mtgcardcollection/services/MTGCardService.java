@@ -1,7 +1,6 @@
 package com.xantech.mtgcardcollection.services;
 
 import com.xantech.mtgcardcollection.dao.*;
-import com.xantech.mtgcardcollection.data.objects.Card;
 import com.xantech.mtgcardcollection.dto.MTGCardDTO;
 import com.xantech.mtgcardcollection.enums.CollectionAdjustment;
 import com.xantech.mtgcardcollection.helpers.MTGGoldfishURLParser;
@@ -30,16 +29,24 @@ public class MTGCardService {
     @Autowired
     MTGCollectionAssetService mtgCollectionAssetService;
 
-    private MTGCard LookupCard(String url) {
-//        CardCollection cardCollection = new CardCollection();
-//        return cardCollection.LookupCard(MTGGoldfishURLParser.GetBlock(url), MTGGoldfishURLParser.GetCard(url), MTGGoldfishURLParser.GetFormat(url));
-        return null;
+    @Autowired
+    MTGDeckAssetService mtgDeckAssetService;
+
+    @Autowired
+    MTGDeckService mtgDeckService;
+
+    public MTGCardDTO LookupCard(String url, MTGUser mtgUser) {
+        MTGCard mtgCard = mtgCardRepository.findDistinctByMtgGoldfishURL(url);
+        MTGCollectionAsset mtgCollectionAsset = mtgCollectionAssetService.getMtgCollectionAssetRepository().findTopByCardIDAndUserID(mtgCard.getId(), mtgUser.getId());
+        return mtgCardDTOService.AssembleMTGCardDTO(mtgCard, mtgCollectionAsset, null);
     }
 
-    public MTGCardDTO AdjustCollection(CollectionAdjustment adjustment, String url, int count, String notes, MTGUser mtgUser) {
+    public MTGCardDTO AdjustCollection(CollectionAdjustment adjustment, String url, int count, String notes, MTGUser mtgUser, String deck) {
         Date date = new Date();
         MTGCard mtgCard = GetMTGCard(url, date);
         MTGCollectionAsset mtgCollectionAsset = null;
+        MTGDeckAsset mtgDeckAsset = null;
+        MTGDeck mtgDeck = mtgDeckService.GetDeck(deck, mtgUser);
 
         if (adjustment == CollectionAdjustment.ADD) {
             mtgCollectionAsset = mtgCollectionAssetService.AddCollectionAsset(mtgCard, mtgUser, count, notes, date);
@@ -47,8 +54,16 @@ public class MTGCardService {
             mtgCollectionAsset = mtgCollectionAssetService.RemoveCollectionAsset(mtgCard, mtgUser, count, notes, date);
         }
 
+        if (mtgDeck != null){
+            if (adjustment == CollectionAdjustment.ADD){
+                mtgDeckAsset = mtgDeckAssetService.AddDeckAsset(mtgCard, mtgDeck, mtgUser, count, date);
+            } else if (adjustment == CollectionAdjustment.REMOVE){
+                mtgDeckAsset = mtgDeckAssetService.RemoveDeckAsset(mtgCard, mtgDeck, mtgUser, count, date);
+            }
+        }
+
         updateCardValue(mtgCard, date);
-        return mtgCardDTOService.AssembleMTGCardDTO(mtgCard, mtgCollectionAsset);
+        return mtgCardDTOService.AssembleMTGCardDTO(mtgCard, mtgCollectionAsset, mtgDeckAsset);
     }
 
     private MTGCard GetMTGCard(String url, Date date) {
@@ -119,15 +134,18 @@ public class MTGCardService {
 
     public List<MTGCard> UpdateCardValues(String override){
         List<MTGCard> mtgCardList = mtgCardRepository.findAllBy();
-        int index = 0;
+        int index = 1;
         Date date = new Date();
+        long nowTime = date.getTime();
 
         for (MTGCard mtgCard : mtgCardList) {
-            if ((date.getTime() - mtgCard.getLastValueCheck().getTime() > 10800000) || (override.compareTo("TRUE") == 0)) { // 3Hours
+            long lastUpdateTime = mtgCard.getLastValueCheck().getTime();
+            long timeDiff = nowTime-lastUpdateTime;
+            if ((timeDiff > 10800000) || (override.compareTo("TRUE") == 0)) { // 3Hours 10800000
                 System.out.println(index++ + " of " + mtgCardList.size() + " : " + mtgCard.toString());
                 updateCardValue(mtgCard, date);
                 try {
-                    Thread.sleep(250);
+                    Thread.sleep(150);
                 } catch (InterruptedException ex) {
                     System.out.println("Thread Exception: " + ex.toString());
                 }

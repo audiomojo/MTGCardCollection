@@ -1,11 +1,9 @@
 package com.xantech.mtgcardcollection.services;
 
-import com.xantech.mtgcardcollection.dao.MTGCard;
-import com.xantech.mtgcardcollection.dao.MTGCardValueHistory;
-import com.xantech.mtgcardcollection.dao.MTGCardValueHistoryRepository;
-import com.xantech.mtgcardcollection.dao.MTGCollectionAsset;
+import com.xantech.mtgcardcollection.dao.*;
 import com.xantech.mtgcardcollection.dto.MTGCardDTO;
 import com.xantech.mtgcardcollection.dto.MTGCardValueHistoryDTO;
+import com.xantech.mtgcardcollection.dto.MTGDeckDTO;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,12 +18,31 @@ public class MTGCardDTOService {
     @Autowired
     MTGCardValueHistoryRepository mtgCardValueHistoryRepository;
 
+    @Autowired
+    MTGDeckAssetRepository mtgDeckAssetRepository;
+
+    @Autowired
+    MTGDeckRepository mtgDeckRepository;
+
     private MTGCardDTO mtgCardDTO;
 
-    public MTGCardDTO AssembleMTGCardDTO(MTGCard mtgCard, MTGCollectionAsset mtgCollectionAsset) {
+    public MTGCardDTO AssembleMTGCardDTO(MTGCard mtgCard, MTGCollectionAsset mtgCollectionAsset, MTGDeckAsset mtgDeckAsset) {
         CopyMTGCard(mtgCard, mtgCollectionAsset);
         CopyMTGCardValueHistoryList(mtgCard);
+        CopyMTGDeckList(mtgCard, mtgDeckAsset);
         return mtgCardDTO;
+    }
+
+    private void CopyMTGDeckList(MTGCard mtgCard, MTGDeckAsset mtgDeckAsset) {
+        List<MTGDeckDTO> mtgDeckDTOList = new ArrayList<>();
+        List<MTGDeckAsset> mtgDeckAssetList = mtgDeckAssetRepository.findAllByCardIDAndUserID(mtgDeckAsset.getCardID(), mtgDeckAsset.getUserID());
+        for (MTGDeckAsset asset : mtgDeckAssetList) {
+            MTGDeckDTO mtgDeckDTO = new MTGDeckDTO();
+            MTGDeck mtgDeck = mtgDeckRepository.findTopById(asset.getDeckID());
+            mtgDeckDTO.setDeckName(mtgDeck.getName());
+            mtgDeckDTOList.add(mtgDeckDTO);
+        }
+        mtgCardDTO.setDeckDTOList(mtgDeckDTOList);
     }
 
     private void CopyMTGCardValueHistoryList(MTGCard mtgCard) {
@@ -53,6 +70,7 @@ public class MTGCardDTOService {
         mtgCardDTO.setCard(mtgCard.getCard());
         mtgCardDTO.setFormat(mtgCard.getFormat());
         mtgCardDTO.setQuantity(mtgCollectionAsset.getQuantity());
+        mtgCardDTO.setCurrentValue(mtgCard.getMostRecentValue());
         mtgCardDTO.setTwentyFourHourValueShift(mtgCard.getTwentyFourHourValueShift());
         mtgCardDTO.setTwentyFourHourPercentageShift(mtgCard.getTwentyFourHourPercentageShift());
         mtgCardDTO.setSevenDayValueShift(mtgCard.getSevenDayValueShift());

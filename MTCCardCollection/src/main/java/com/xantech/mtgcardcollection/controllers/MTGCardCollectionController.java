@@ -1,14 +1,12 @@
 package com.xantech.mtgcardcollection.controllers;
 
+import com.xantech.mtgcardcollection.dao.MTGDeck;
 import com.xantech.mtgcardcollection.dao.MTGUser;
 import com.xantech.mtgcardcollection.data.collections.CardCollection;
 import com.xantech.mtgcardcollection.dto.MTGCardDTO;
 import com.xantech.mtgcardcollection.enums.CollectionAdjustment;
-import com.xantech.mtgcardcollection.services.DatabaseService;
-import com.xantech.mtgcardcollection.services.MTGCollectionReportService;
-import com.xantech.mtgcardcollection.services.MTGUserService;
+import com.xantech.mtgcardcollection.services.*;
 import com.xantech.mtgcardcollection.view.reports.CardValueSummary;
-import com.xantech.mtgcardcollection.services.MTGCardService;
 import com.xantech.mtgcardcollection.helpers.ScreenScrapeCardValue;
 import com.xantech.mtgcardcollection.view.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,12 @@ public class MTGCardCollectionController {
     @Autowired
     MTGCollectionReportService mtgCollectionReportService;
 
+    @Autowired
+    MTGCollectionAssetService mtgCollectionAssetService;
+
+    @Autowired
+    MTGDeckService mtgDeckService;
+
     @RequestMapping("/cardvalue")
     public ScreenScrapeCardValue screenScrapeCardValue(@RequestParam(value="block", defaultValue="Return+to+Ravnica") String block,
                                                        @RequestParam(value="Card", defaultValue="Jace+Architect+of+Thought") String card,
@@ -42,15 +46,17 @@ public class MTGCardCollectionController {
     @RequestMapping("/addCard")
     public MTGCardDTO processAddCard(@RequestParam(value="url") String url,
                                      @RequestParam(value="quantity") String quantity,
-                                     @RequestParam(value="notes") String notes){
-        return  mtgCardService.AdjustCollection(CollectionAdjustment.ADD, url, Integer.parseInt(quantity), notes, mtgUserService.GetUser());
+                                     @RequestParam(value="notes") String notes,
+                                     @RequestParam(value="decks-drop-down") String deck){
+        return  mtgCardService.AdjustCollection(CollectionAdjustment.ADD, url, Integer.parseInt(quantity), notes, mtgUserService.GetUser(), deck);
     }
 
     @RequestMapping("/deleteCard")
     public MTGCardDTO processDeleteCard(@RequestParam(value="url") String url,
                                         @RequestParam(value="quantity") String quantity,
-                                        @RequestParam(value="notes") String notes){
-        return  mtgCardService.AdjustCollection(CollectionAdjustment.REMOVE, url, Integer.parseInt(quantity), notes, mtgUserService.GetUser());
+                                        @RequestParam(value="notes") String notes,
+                                        @RequestParam(value="decks-drop-down") String deck){
+        return  mtgCardService.AdjustCollection(CollectionAdjustment.REMOVE, url, Integer.parseInt(quantity), notes, mtgUserService.GetUser(), deck);
     }
 
     @RequestMapping("/addUser")
@@ -59,6 +65,11 @@ public class MTGCardCollectionController {
                            @RequestParam(value="mobile") String mobile,
                            @RequestParam(value="password") String password) {
         return mtgUserService.AddUser(userName, email, mobile, password);
+    }
+
+    @RequestMapping("/lookupCard")
+    public MTGCardDTO lookupCard(@RequestParam(value="url") String url) {
+        return mtgCardService.LookupCard(url, mtgUserService.GetUser());
     }
 
     @RequestMapping("/collectionSummary")
@@ -88,11 +99,24 @@ public class MTGCardCollectionController {
     @RequestMapping("/decrementCardCount")
     public String decrementCardCount() { return DecrementCardCountUI.HTML(); }
 
-    @RequestMapping("/lookupCard")
-    public String lookupCard() { return LookupCard.HTML(); }
-
     @RequestMapping("/transferFileToDatabase")
     public String transferFileToDatabase() {
         return databaseService.transferFileToDatabase();
     }
+
+    @RequestMapping("/getNoteDropDownOptions")
+    public String getNoteDropDownOptions() {
+        return mtgCollectionAssetService.GetNoteDropDownOptions(mtgUserService.GetUser());
+    }
+
+    @RequestMapping("/addDeck")
+    public MTGDeck addDeck(@RequestParam(value="deckName") String deckName,
+                           @RequestParam(value="notes") String notes) {
+        return mtgDeckService.addCard(deckName, notes, mtgUserService.GetUser());
+    }
+    @RequestMapping("/getDeckDropDownOptions")
+    public String getDeckDropDownOptions() {
+        return mtgDeckService.GetDeckDropDownOptions(mtgUserService.GetUser());
+    }
+
 }

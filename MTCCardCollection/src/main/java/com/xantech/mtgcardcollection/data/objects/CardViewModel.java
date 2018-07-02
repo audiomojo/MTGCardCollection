@@ -2,6 +2,7 @@ package com.xantech.mtgcardcollection.data.objects;
 
 import com.xantech.mtgcardcollection.dao.MTGCard;
 import com.xantech.mtgcardcollection.dao.MTGCollectionAsset;
+import com.xantech.mtgcardcollection.dao.MTGDeckAsset;
 import com.xantech.mtgcardcollection.helpers.TextFormatting;
 import lombok.Data;
 

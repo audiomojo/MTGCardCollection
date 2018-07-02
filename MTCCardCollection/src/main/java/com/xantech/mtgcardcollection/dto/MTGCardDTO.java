@@ -1,5 +1,6 @@
 package com.xantech.mtgcardcollection.dto;
 
+import com.xantech.mtgcardcollection.dao.MTGDeck;
 import lombok.Data;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public class MTGCardDTO {
     private String card;
     private String format;
     private int quantity;
-    private double purchasePrice;
+    private double currentValue;
     private double twentyFourHourValueShift;
     private double twentyFourHourPercentageShift;
     private double sevenDayValueShift;
@@ -22,4 +23,5 @@ public class MTGCardDTO {
     private String mtgGoldfishURL;
     private String notes;
     List<MTGCardValueHistoryDTO> valueHistoryDTOList;
+    List<MTGDeckDTO> deckDTOList;
 }

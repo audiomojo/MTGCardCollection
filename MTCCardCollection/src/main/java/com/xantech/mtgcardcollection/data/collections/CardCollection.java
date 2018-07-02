@@ -1,7 +1,6 @@
 package com.xantech.mtgcardcollection.data.collections;
 
 import com.xantech.mtgcardcollection.data.objects.Card;
-import com.xantech.mtgcardcollection.data.objects.CardViewModel;
 import lombok.Data;
 
 import java.io.*;

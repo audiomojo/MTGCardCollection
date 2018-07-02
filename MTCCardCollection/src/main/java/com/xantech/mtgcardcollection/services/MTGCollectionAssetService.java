@@ -1,15 +1,15 @@
 package com.xantech.mtgcardcollection.services;
 
-import com.xantech.mtgcardcollection.dao.MTGCard;
-import com.xantech.mtgcardcollection.dao.MTGCollectionAsset;
-import com.xantech.mtgcardcollection.dao.MTGCollectionAssetRepository;
-import com.xantech.mtgcardcollection.dao.MTGUser;
+import com.xantech.mtgcardcollection.dao.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -74,4 +74,25 @@ public class MTGCollectionAssetService {
     }
 
 
+    public String GetNoteDropDownOptions(MTGUser mtgUser) {
+        List<MTGCollectionAsset> mtgCollectionAssetList = mtgCollectionAssetRepository.findAllByUserID(mtgUser.getId());
+        List<MTGCollectionAsset> mtgCollectionAssetListFiltered = mtgCollectionAssetList.stream().filter(asset -> asset.getNotes().compareTo("") != 0).collect(Collectors.toList());
+
+        String result = "<option value=\"Type Free Text Below...\" >Type Free Text Below</option>";
+        String assetString = "";
+        ArrayList<String> usedAssets = new ArrayList<>();
+        for (MTGCollectionAsset asset : mtgCollectionAssetListFiltered) {
+
+            String[] tokens = asset.getNotes().split("\n");
+            if (tokens.length > 1)
+                assetString = tokens[1];
+
+            if (usedAssets.contains(assetString) == false) {
+                result += "<option value=\"" + assetString + "\" >" + assetString + "</option>";
+                usedAssets.add(assetString);
+            }
+            //result += "<option value=\"" + asset.getNotes() + "\" >" + asset.getNotes() + "</option>";
+        }
+        return result;
+    }
 }
