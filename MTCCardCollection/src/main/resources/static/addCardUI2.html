@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MTG Card Collection: Add Card</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+</head>
+<body>
+<form name="mtgcard" action="addCard">
+    MTG Goldfish Card URL:
+    <br>
+    <input id="url" type="text" name="url" value="" style="width:1000px;" onfocus="this.select();">
+    <br><br><br>
+    Quantity:
+    <br>
+    <input id="quantity" type="text" name="quantity" value="1">
+    <br><br><br>
+    Notes: (Select something from the Drop Down or enter Free Text Below...)
+    <br>
+    <select id="notes-drop-down" name="notes-drop-down" onchange="updateNotes();">
+        <option value="Type Free Text Below...">Type Free Text Below...</option>
+        <option value="Booster Pack">Booster Pack</option>
+        <option value="Commander Deck">Commander Deck</option>
+        <option value="Duel Deck">Dual Deck</option>
+    </select>
+    <br><br>
+    <textarea id="notes" name="notes" rows = 5 cols=100></textarea>
+    <br><br><br>
+    Deck: (Leave blank if card is not in a deck)
+    <br>
+    <select id="decks-drop-down" name="decks-drop-down">
+        <option value="no-deck">Select deck from list if card is in a deck</option>
+    </select>
+    <br><br><br>
+    <input type="submit" value="Add Card(s) to Collection" onclick="addCard();">
+</form>
+<script>
+    var host = 'http://localhost:8080';
+    //var host = 'http://macbook-pro:8080';
+
+    function loadNotesDropDownOptions() {
+        $('#notes-drop-down').load(host + '/getNoteDropDownOptions');
+        $('#decks-drop-down').load(host + '/getDeckDropDownOptions');
+    }
+
+    window.onload = function() {
+        document.getElementById("url").innerText = "";
+        loadNotesDropDownOptions();
+        document.getElementById("url").focus();
+    }
+
+    function updateNotes() {
+        var notes = document.getElementById("notes");
+        var element = document.getElementById("notes-drop-down");
+        if (element.selectedIndex == 0) {
+            notes.innerText = "";
+        } else {
+            notes.innerText = element.options[element.selectedIndex].innerText;
+        }
+    }
+
+    function getFormData() {
+        var data = "{\n\turl: \"" + document.getElementById("url").innerText + "\"" +
+                    "\n\tquantity: " + document.getElementById("quantity").innerText +
+                    "\n\tnotes: \"" + document.getElementById("notes").innerText + "\"" +
+                    "\n\tdecks-drop-down: \"" + document.getElementById("decks-drop-down").innerText + "\"\n}";
+        return data;
+    }
+
+    function addCard() {
+        $.post(host+ "/addCard", getFormData(), function(data, status) { alert("Data: " + data + "\nStatus: " + status); });
+    }
+</script>
+</body>
+</html>

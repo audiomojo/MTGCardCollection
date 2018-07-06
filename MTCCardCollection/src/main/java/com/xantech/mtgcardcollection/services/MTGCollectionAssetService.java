@@ -1,6 +1,7 @@
 package com.xantech.mtgcardcollection.services;
 
 import com.xantech.mtgcardcollection.dao.*;
+import com.xantech.mtgcardcollection.helpers.TextFormatting;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -18,6 +18,9 @@ public class MTGCollectionAssetService {
 
     @Autowired
     MTGCollectionAssetRepository mtgCollectionAssetRepository;
+
+    @Autowired
+    MTGCardRepository mtgCardRepository;
 
     public MTGCollectionAsset AddCollectionAsset(MTGCard mtgCard, MTGUser mtgUser, int count, String notes, Date date) {
         MTGCollectionAsset mtgCollectionAsset = GetMTGCollectionAsset(mtgCard, mtgUser, date);
@@ -75,24 +78,38 @@ public class MTGCollectionAssetService {
 
 
     public String GetNoteDropDownOptions(MTGUser mtgUser) {
-        List<MTGCollectionAsset> mtgCollectionAssetList = mtgCollectionAssetRepository.findAllByUserID(mtgUser.getId());
-        List<MTGCollectionAsset> mtgCollectionAssetListFiltered = mtgCollectionAssetList.stream().filter(asset -> asset.getNotes().compareTo("") != 0).collect(Collectors.toList());
+        List<String> dropDownOptions = filterAndSortNotesDropDownOptions(mtgCollectionAssetRepository.findAllByUserID(mtgUser.getId()));
 
         String result = "<option value=\"Type Free Text Below...\" >Type Free Text Below</option>";
-        String assetString = "";
-        ArrayList<String> usedAssets = new ArrayList<>();
-        for (MTGCollectionAsset asset : mtgCollectionAssetListFiltered) {
-
-            String[] tokens = asset.getNotes().split("\n");
-            if (tokens.length > 1)
-                assetString = tokens[1];
-
-            if (usedAssets.contains(assetString) == false) {
-                result += "<option value=\"" + assetString + "\" >" + assetString + "</option>";
-                usedAssets.add(assetString);
-            }
-            //result += "<option value=\"" + asset.getNotes() + "\" >" + asset.getNotes() + "</option>";
+        for (String dropDownOption : dropDownOptions) {
+            result += "<option value=\"" + dropDownOption + "\" >" + dropDownOption + "</option>";
         }
         return result;
+    }
+
+    private List<String> filterAndSortNotesDropDownOptions(List<MTGCollectionAsset> mtgCollectionAssetList) {
+        List<String> dropDownOptions = new ArrayList<>();
+
+        for (MTGCollectionAsset mtgCollectionAsset : mtgCollectionAssetList) {
+            String[] optionSegments = mtgCollectionAsset.getNotes().split("\\r?\\n");
+            if ((optionSegments.length >= 2) && (optionSegments[1].compareTo("") != 0) && dropDownOptions.contains(optionSegments[1]) == false)
+                dropDownOptions.add(optionSegments[1]);
+        }
+
+        dropDownOptions.sort((s1, s2) -> s1.compareTo(s2));
+
+        return dropDownOptions;
+    }
+
+    public String totalCollectionValue(MTGUser mtgUser) {
+        double total = 0;
+
+        List<MTGCollectionAsset>mtgCollectionAssetList = mtgCollectionAssetRepository.findAllByUserID(mtgUser.getId());
+        for (MTGCollectionAsset mtgCollectionAsset : mtgCollectionAssetList) {
+            MTGCard mtgCard = mtgCardRepository.findDistinctById(mtgCollectionAsset.getCardID());
+            total = total + (mtgCollectionAsset.getQuantity() * mtgCard.getMostRecentValue());
+        }
+
+        return TextFormatting.FormatAsUSD(total);
     }
 }

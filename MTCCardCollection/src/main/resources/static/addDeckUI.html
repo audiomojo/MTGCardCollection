@@ -3,6 +3,7 @@
 <head>
     <title>MTG Card Collection: Add Deck</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 </head>
 <body>
     <form name="mtgdeck" action="addDeck">
@@ -10,11 +11,29 @@
         <br>
         <input id="deckName" type="text" name="deckName" value="" style="width:1000px;" onfocus="this.select();">
         <br><br><br>
+        Deck Type:
+        <br>
+        <select id="deck-type-drop-down" name="deck-type-drop-down">
+            <option value="no-deck-type">Select deck type from list...</option>
+        </select>
+        <br><br><br>
         Notes:
         <br>
         <textarea id="notes" name="notes" rows = 5 cols=100></textarea>
         <br><br><br>
         <input type="submit" value="Create Deck">
     </form>
+    <script>
+        var host = 'http://localhost:8080';
+        //var host = 'http://macbook-pro:8080';
+
+        function loadDropDownOptions() {
+            $('#deck-type-drop-down').load(host + '/getDeckTypeDropDownOptions');
+        }
+
+        window.onload = function() {
+            loadDropDownOptions();
+        }
+    </script>
 </body>
 </html>

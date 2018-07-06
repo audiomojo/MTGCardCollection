@@ -4,6 +4,7 @@ import com.xantech.mtgcardcollection.dao.MTGDeck;
 import com.xantech.mtgcardcollection.dao.MTGUser;
 import com.xantech.mtgcardcollection.data.collections.CardCollection;
 import com.xantech.mtgcardcollection.dto.MTGCardDTO;
+import com.xantech.mtgcardcollection.dto.MTGDeckListDTO;
 import com.xantech.mtgcardcollection.enums.CollectionAdjustment;
 import com.xantech.mtgcardcollection.services.*;
 import com.xantech.mtgcardcollection.view.reports.CardValueSummary;
@@ -55,8 +56,8 @@ public class MTGCardCollectionController {
     public MTGCardDTO processDeleteCard(@RequestParam(value="url") String url,
                                         @RequestParam(value="quantity") String quantity,
                                         @RequestParam(value="notes") String notes,
-                                        @RequestParam(value="decks-drop-down") String deck){
-        return  mtgCardService.AdjustCollection(CollectionAdjustment.REMOVE, url, Integer.parseInt(quantity), notes, mtgUserService.GetUser(), deck);
+                                        @RequestParam(value="decks-drop-down") String deckID){
+        return  mtgCardService.AdjustCollection(CollectionAdjustment.REMOVE, url, Integer.parseInt(quantity), notes, mtgUserService.GetUser(), deckID);
     }
 
     @RequestMapping("/addUser")
@@ -111,12 +112,30 @@ public class MTGCardCollectionController {
 
     @RequestMapping("/addDeck")
     public MTGDeck addDeck(@RequestParam(value="deckName") String deckName,
-                           @RequestParam(value="notes") String notes) {
-        return mtgDeckService.addCard(deckName, notes, mtgUserService.GetUser());
+                           @RequestParam(value="notes") String notes,
+                           @RequestParam(value="deck-type-drop-down") String deckTypeID) {
+        return mtgDeckService.addDeck(deckName, notes, deckTypeID, mtgUserService.GetUser());
     }
     @RequestMapping("/getDeckDropDownOptions")
     public String getDeckDropDownOptions() {
         return mtgDeckService.GetDeckDropDownOptions(mtgUserService.GetUser());
     }
+
+    @RequestMapping("/getDeckTypeDropDownOptions")
+    public String getDeckTypeDropDownOptions() {
+        return mtgDeckService.GetDeckTypeDropDownOptions(mtgUserService.GetUser());
+    }
+
+    @RequestMapping("/getDeckList")
+    public MTGDeckListDTO getDeckList(@RequestParam(value="decks-drop-down") String deckName) {
+        return mtgDeckService.getDeckList(deckName);
+    }
+
+    @RequestMapping("/totalCollectionValue")
+    public String totalCollectionValue() {
+        return mtgCollectionAssetService.totalCollectionValue(mtgUserService.GetUser());
+    }
+
+
 
 }

@@ -1,23 +1,43 @@
 <html>
-<head>
-    <title>MTG Card Collection: Delete Card</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <head>
+        <title>MTG Card Collection: Delete Card</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
     </head>
-<body>
-    <form name="mtgcard" action="deleteCard">
-        MTG Goldfish Card URL:
-        <br>
-        <input type="text" name="url" value="" style="width:1000px;">
-        <br><br><br>
-        Quantity:
-        <br>
-        <input type="text" name="quantity" value="1">
-        <br><br><br>
-        Notes:
-        <br>
-        <textarea name="notes" rows = 5 cols=100></textarea>
-        <br><br><br>
-        <input type="submit" value="Remove Card(s) from Collection">
-    </form>
-</body>
+    <body>
+        <form name="mtgcard" action="deleteCard">
+            MTG Goldfish Card URL:
+            <br>
+            <input id = "url" type="text" name="url" value="" style="width:1000px;">
+            <br><br><br>
+            Quantity:
+            <br>
+            <input type="text" name="quantity" value="1">
+            <br><br><br>
+            Notes:
+            <br>
+            <textarea name="notes" rows = 5 cols=100></textarea>
+            <br><br><br>
+            Deck: (Leave blank if card is not in a deck)
+            <br>
+            <select id="decks-drop-down" name="decks-drop-down">
+                <option value="no-deck">Select deck from list if card is in a deck</option>
+            </select>
+            <br><br><br>
+            <input type="submit" value="Remove Card(s) from Collection">
+        </form>
+        <script>
+            var host = 'http://localhost:8080';
+            //var host = 'http://macbook-pro:8080';
+
+            function loadDropDownOptions() {
+                $('#decks-drop-down').load(host + '/getDeckDropDownOptions');
+            }
+
+            window.onload = function() {
+                loadDropDownOptions();
+                document.getElementById("url").focus();
+            }
+        </script>
+    </body>
 </html>

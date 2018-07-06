@@ -35,17 +35,17 @@
         <input type="submit" value="Add Card(s) to Collection">
     </form>
     <script>
-        //var host = 'http://localhost:8080';
-        var host = 'http://macbook-pro:8080';
+        var host = 'http://localhost:8080';
+        //var host = 'http://macbook-pro:8080';
 
-        function loadNotesDropDownOptions() {
+        function loadDropDownOptions() {
             $('#notes-drop-down').load(host + '/getNoteDropDownOptions');
             $('#decks-drop-down').load(host + '/getDeckDropDownOptions');
         }
 
         window.onload = function() {
             document.getElementById("url").innerText = "";
-            loadNotesDropDownOptions();
+            loadDropDownOptions();
             document.getElementById("url").focus();
         }
 

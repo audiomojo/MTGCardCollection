@@ -38,18 +38,22 @@ public class MTGCardService {
     public MTGCardDTO LookupCard(String url, MTGUser mtgUser) {
         MTGCard mtgCard = mtgCardRepository.findDistinctByMtgGoldfishURL(url);
         MTGCollectionAsset mtgCollectionAsset = mtgCollectionAssetService.getMtgCollectionAssetRepository().findTopByCardIDAndUserID(mtgCard.getId(), mtgUser.getId());
-        return mtgCardDTOService.AssembleMTGCardDTO(mtgCard, mtgCollectionAsset, null);
+
+        return mtgCardDTOService.AssembleMTGCardDTO(mtgCard, mtgCollectionAsset, mtgUser);
     }
 
-    public MTGCardDTO AdjustCollection(CollectionAdjustment adjustment, String url, int count, String notes, MTGUser mtgUser, String deck) {
+    public MTGCardDTO AdjustCollection(CollectionAdjustment adjustment, String url, int count, String notes, MTGUser mtgUser, String deckID) {
         Date date = new Date();
         MTGCard mtgCard = GetMTGCard(url, date);
         MTGCollectionAsset mtgCollectionAsset = null;
         MTGDeckAsset mtgDeckAsset = null;
-        MTGDeck mtgDeck = mtgDeckService.GetDeck(deck, mtgUser);
+        MTGDeck mtgDeck = null;
+        if (deckID.compareTo("no-deck") != 0)
+            mtgDeck = mtgDeckService.GetDeck(Integer.parseInt(deckID));
 
         if (adjustment == CollectionAdjustment.ADD) {
             mtgCollectionAsset = mtgCollectionAssetService.AddCollectionAsset(mtgCard, mtgUser, count, notes, date);
+            updateCardValue(mtgCard, date);
         } else if (adjustment == CollectionAdjustment.REMOVE) {
             mtgCollectionAsset = mtgCollectionAssetService.RemoveCollectionAsset(mtgCard, mtgUser, count, notes, date);
         }
@@ -62,8 +66,7 @@ public class MTGCardService {
             }
         }
 
-        updateCardValue(mtgCard, date);
-        return mtgCardDTOService.AssembleMTGCardDTO(mtgCard, mtgCollectionAsset, mtgDeckAsset);
+        return mtgCardDTOService.AssembleMTGCardDTO(mtgCard, mtgCollectionAsset, mtgUser);
     }
 
     private MTGCard GetMTGCard(String url, Date date) {
@@ -150,6 +153,9 @@ public class MTGCardService {
                     System.out.println("Thread Exception: " + ex.toString());
                 }
             }
+            else
+                System.out.println(index++ + " of " + mtgCardList.size() + " : [Have Recent Value] -- " + mtgCard.toString());
+
         }
 
         return mtgCardList;

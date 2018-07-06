@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MTG Card Collection: Get Deck List</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+</head>
+<body>
+<form name="mtgcard" action="getDeckList">
+    Deck:
+    <br>
+    <select id="decks-drop-down" name="decks-drop-down">
+        <option value="no-deck">Select deck from list...</option>
+    </select>
+    <br><br><br>
+    <input type="submit" value="Get Deck List">
+</form>
+<script>
+    var host = 'http://localhost:8080';
+    //var host = 'http://macbook-pro:8080';
+
+    function loadDropDownOptions() {
+        $('#decks-drop-down').load(host + '/getDeckDropDownOptions');
+    }
+
+    window.onload = function() {
+        loadDropDownOptions();
+    }
+</script>
+</body>
+</html>

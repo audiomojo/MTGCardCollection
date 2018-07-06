@@ -26,16 +26,17 @@ public class MTGCardDTOService {
 
     private MTGCardDTO mtgCardDTO;
 
-    public MTGCardDTO AssembleMTGCardDTO(MTGCard mtgCard, MTGCollectionAsset mtgCollectionAsset, MTGDeckAsset mtgDeckAsset) {
+    public MTGCardDTO AssembleMTGCardDTO(MTGCard mtgCard, MTGCollectionAsset mtgCollectionAsset, MTGUser mtgUser) {
         CopyMTGCard(mtgCard, mtgCollectionAsset);
         CopyMTGCardValueHistoryList(mtgCard);
-        CopyMTGDeckList(mtgCard, mtgDeckAsset);
+        CopyMTGDeckList(mtgCard, mtgUser);
         return mtgCardDTO;
     }
 
-    private void CopyMTGDeckList(MTGCard mtgCard, MTGDeckAsset mtgDeckAsset) {
+    private void CopyMTGDeckList(MTGCard mtgCard, MTGUser mtgUser) {
         List<MTGDeckDTO> mtgDeckDTOList = new ArrayList<>();
-        List<MTGDeckAsset> mtgDeckAssetList = mtgDeckAssetRepository.findAllByCardIDAndUserID(mtgDeckAsset.getCardID(), mtgDeckAsset.getUserID());
+        //List<MTGDeckAsset> mtgDeckAssetList = mtgDeckAssetRepository.findAllByCardIDAndUserID(mtgDeckAsset.getCardID(), mtgDeckAsset.getUserID());
+        List<MTGDeckAsset> mtgDeckAssetList = mtgDeckAssetRepository.findAllByCardIDAndUserID(mtgCard.getId(), mtgUser.getId());
         for (MTGDeckAsset asset : mtgDeckAssetList) {
             MTGDeckDTO mtgDeckDTO = new MTGDeckDTO();
             MTGDeck mtgDeck = mtgDeckRepository.findTopById(asset.getDeckID());

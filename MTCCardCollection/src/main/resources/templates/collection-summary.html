@@ -11,6 +11,7 @@
 		<script th:src="@{/js/skel-layers.min.js}"></script>
 		<script th:src="@{/js/init.js}"></script>
 		<script th:src="@{/js/collection-summary.js}"></script>
+		<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 		<noscript>
 			<link rel="stylesheet" type="text/css" href="../static/css/skel.css" th:href="@{/css/skel.css}"/>
 			<link rel="stylesheet" type="text/css" href="../static/css/style.css" th:href="@{/css/style.css}"/>
@@ -37,6 +38,8 @@
 					<header class="major">
 						<h2>Collection Summary</h2>
 						<p>Sorted by 24 Hour Value Change</p>
+						<div id="total-value">Total Collection Value: </div>
+
 					</header>
 
 
@@ -94,6 +97,24 @@
 		<!-- Footer -->
         <script>
             FormatValueShifts();
+        </script>
+        <script>
+            var host = 'http://localhost:8080';
+            //var host = 'http://macbook-pro:8080';
+
+            function loadCollectionValue() {
+                $.ajax({
+                    url: host + '/totalCollectionValue',
+                    data: { }, // No Params to pass
+                    success: function(data) {
+                        document.getElementById("total-value").innerText = "Total Collection Value: " + data;
+                    }
+                });
+            }
+
+            window.onload = function() {
+                loadCollectionValue();
+            }
         </script>
     </body>
 </html>

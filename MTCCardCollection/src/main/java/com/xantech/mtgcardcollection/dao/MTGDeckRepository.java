@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface MTGDeckRepository extends JpaRepository<MTGDeck, Long> {
     MTGDeck findTopByNameAndUserID(String name, long userID);
-    List<MTGDeck> findAllByUserID(Long userID);
+    List<MTGDeck> findAllByUserIDOrderByModifiedDateDesc(Long userID);
     MTGDeck findTopById(long ID);
 }
