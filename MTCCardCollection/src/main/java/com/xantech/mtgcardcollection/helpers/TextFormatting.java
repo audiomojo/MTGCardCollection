@@ -14,6 +14,4 @@ public class TextFormatting {
         String result = NumberFormat.getCurrencyInstance().format(value);
         return result;
     }
-
-
 }

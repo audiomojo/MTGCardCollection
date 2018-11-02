@@ -2,9 +2,11 @@ package com.xantech.mtgcardcollection.view.reports;
 
 import com.xantech.mtgcardcollection.data.collections.CardCollection;
 import com.xantech.mtgcardcollection.data.objects.Card;
+import com.xantech.mtgcardcollection.data.objects.CardViewModel;
 import com.xantech.mtgcardcollection.helpers.TextFormatting;
 
 import java.util.Date;
+import java.util.List;
 
 public class CardValueSummary {
     private String format;
@@ -14,12 +16,10 @@ public class CardValueSummary {
         this.format = format;
     }
 
-    public String CardValueSummaryReportHTML(String override)
+    public String CardValueSummaryReportHTML(String override, List<CardViewModel> cardViewModelList)
     {
         StringBuilder cardValueSummaryReportHTML = new StringBuilder();
-        CardCollection cardCollection = new CardCollection();
-        cardCollection.UpdateCollectionValues(override);
-        cardCollection.SortCollection(format);
+        //cardCollection.SortCollection(format);
         double totalCollectionValue = 0.0;
 
 
@@ -30,23 +30,26 @@ public class CardValueSummary {
         cardValueSummaryReportHTML.append("<body>");
         cardValueSummaryReportHTML.append("<h1>MTG Card Collection Summary Report</h1>");
         cardValueSummaryReportHTML.append(new Date().toString() + "<br><br>");
-        for (Card card : cardCollection.getCollection()) {
-            cardValueSummaryReportHTML.append("Card: " + card.getCard() + "<br>");
-            cardValueSummaryReportHTML.append("Block: " + card.getBlock() + "<br>");
-            cardValueSummaryReportHTML.append("Format: " + card.getFormat() + "<br>");
-            cardValueSummaryReportHTML.append("Quantity: " + card.getQuantity() + "<br>");
-            double cardValue = card.GetCardValue();
-            totalCollectionValue += (cardValue*card.getQuantity());
+        for (CardViewModel cardViewModel : cardViewModelList) {
+            cardValueSummaryReportHTML.append("URL: <a href=" + cardViewModel.getUrl() + ">URL</a><br>");
+            cardValueSummaryReportHTML.append("Image URL: <a href=" + cardViewModel.getImageUrl() + ">Image URL</a><br>");
+            cardValueSummaryReportHTML.append("Card: " + cardViewModel.getCard() + "<br>");
+            cardValueSummaryReportHTML.append("Block: " + cardViewModel.getBlock() + "<br>");
+            cardValueSummaryReportHTML.append("Format: " + cardViewModel.getFormat() + "<br>");
+            cardValueSummaryReportHTML.append("Quantity: " + cardViewModel.getQuantity() + "<br>");
+            double cardValue = cardViewModel.getValue();
+            int cardCount = new Integer(cardViewModel.getQuantity());
+            totalCollectionValue += (cardValue*cardCount);
             cardValueSummaryReportHTML.append("Value: $" + cardValue + "<br>");
-            cardValueSummaryReportHTML.append("24-Hour Value Shift: " + TextFormatting.FormatAsUSD(card.getCardValueMetrics().getTwentyFourHourValueShift()) + "<br>");
-            cardValueSummaryReportHTML.append("24-Hour % Shift: " + TextFormatting.FormatAsPercentage(card.getCardValueMetrics().getTwentyFourHourPercentageShift()) + "<br>");
-            cardValueSummaryReportHTML.append("7-Day Value Shift: " + TextFormatting.FormatAsUSD(card.getCardValueMetrics().getSevenDayValueShift()) + "<br>");
-            cardValueSummaryReportHTML.append("7-Day % Shift: " + TextFormatting.FormatAsPercentage(card.getCardValueMetrics().getSevenDayHourPercentageShift()) + "<br>");
-            cardValueSummaryReportHTML.append("30-Day Value Shift: " + TextFormatting.FormatAsUSD(card.getCardValueMetrics().getThirtyDayValueShift()) + "<br>");
-            cardValueSummaryReportHTML.append("30-Day % Shift: " + TextFormatting.FormatAsPercentage(card.getCardValueMetrics().getThirtyDayPercentageShift()) + "<br>");
-            cardValueSummaryReportHTML.append("All History Value Shift: " + TextFormatting.FormatAsUSD(card.getCardValueMetrics().getAllTimeValueShift()) + "<br>");
-            cardValueSummaryReportHTML.append("All History % Shift: " + TextFormatting.FormatAsPercentage(card.getCardValueMetrics().getAllTimePercentageShift()) + "<br>");
-            cardValueSummaryReportHTML.append("Collection Value: " + TextFormatting.FormatAsUSD(cardValue * card.getQuantity()) + "<br>");
+            cardValueSummaryReportHTML.append("24-Hour Value Shift: " + TextFormatting.FormatAsUSD(cardViewModel.getTwentyFourHourValueShift()) + "<br>");
+            cardValueSummaryReportHTML.append("24-Hour % Shift: " + TextFormatting.FormatAsPercentage(cardViewModel.getTwentyFourHourPercentageShift()) + "<br>");
+            cardValueSummaryReportHTML.append("7-Day Value Shift: " + TextFormatting.FormatAsUSD(cardViewModel.getSevenDayValueShift()) + "<br>");
+            cardValueSummaryReportHTML.append("7-Day % Shift: " + TextFormatting.FormatAsPercentage(cardViewModel.getSevenDayPercentageShift()) + "<br>");
+            cardValueSummaryReportHTML.append("30-Day Value Shift: " + TextFormatting.FormatAsUSD(cardViewModel.getThirtyDayValueShift()) + "<br>");
+            cardValueSummaryReportHTML.append("30-Day % Shift: " + TextFormatting.FormatAsPercentage(cardViewModel.getThirtyDayPercentageShift()) + "<br>");
+            cardValueSummaryReportHTML.append("All History Value Shift: " + TextFormatting.FormatAsUSD(cardViewModel.getAllTimeValueShift()) + "<br>");
+            cardValueSummaryReportHTML.append("All History % Shift: " + TextFormatting.FormatAsPercentage(cardViewModel.getAllTimePercentageShift()) + "<br>");
+            cardValueSummaryReportHTML.append("Collection Value: " + TextFormatting.FormatAsUSD(cardValue * cardCount) + "<br>");
             cardValueSummaryReportHTML.append("<br><br>");
         }
         cardValueSummaryReportHTML.append("<h1>Total Collection Value: " + TextFormatting.FormatAsUSD(totalCollectionValue) + "</h1>");

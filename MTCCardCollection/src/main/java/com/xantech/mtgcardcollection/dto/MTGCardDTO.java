@@ -21,7 +21,8 @@ public class MTGCardDTO {
     private double allTimeValueShift;
     private double allTimePercentageShift;
     private String mtgGoldfishURL;
+    private String mtgImageURL;
     private String notes;
-    List<MTGCardValueHistoryDTO> valueHistoryDTOList;
     List<MTGDeckDTO> deckDTOList;
+    List<MTGCardValueHistoryDTO> valueHistoryDTOList;
 }

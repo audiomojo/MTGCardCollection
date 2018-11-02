@@ -32,33 +32,37 @@ public class CardViewModel {
     private String allTimeValueShiftStr;
     private double allTimePercentageShift;
     private String allTimePercentageShiftStr;
+    private String url;
+    private String imageUrl;
 
     public CardViewModel() {}
 
     public CardViewModel(MTGCollectionAsset mtgCollectionAsset, MTGCard mtgCard){
-        this.block = mtgCard.getBlock();
-        this.card = mtgCard.getCard();
-        this.format = mtgCard.getFormat();
-        this.quantity = Integer.toString(mtgCollectionAsset.getQuantity());
-        this.value = mtgCard.getMostRecentValue();
-        this.valueStr = TextFormatting.FormatAsUSD(mtgCard.getMostRecentValue());
-        this.totalValue = mtgCard.getMostRecentValue() * mtgCollectionAsset.getQuantity();
-        this.totalValueStr = TextFormatting.FormatAsUSD(mtgCard.getMostRecentValue() * mtgCollectionAsset.getQuantity());
-        this.twentyFourHourValueShift = mtgCard.getTwentyFourHourValueShift();
-        this.twentyFourHourValueShiftStr = TextFormatting.FormatAsUSD(mtgCard.getTwentyFourHourValueShift());
-        this.twentyFourHourPercentageShift = mtgCard.getTwentyFourHourPercentageShift();
-        this.twentyFourHourPercentageShiftStr = TextFormatting.FormatAsPercentage(mtgCard.getTwentyFourHourPercentageShift());
-        this.sevenDayValueShift = mtgCard.getSevenDayValueShift();
-        this.sevenDayValueShiftStr = TextFormatting.FormatAsUSD(mtgCard.getSevenDayValueShift());
-        this.sevenDayPercentageShift = mtgCard.getSevenDayHourPercentageShift();
-        this.sevenDayPercentageShiftStr = TextFormatting.FormatAsPercentage(mtgCard.getSevenDayHourPercentageShift());
-        this.thirtyDayValueShift = mtgCard.getThirtyDayValueShift();
-        this.thirtyDayValueShiftStr = TextFormatting.FormatAsUSD(mtgCard.getThirtyDayValueShift());
-        this.thirtyDayPercentageShift = mtgCard.getThirtyDayPercentageShift();
-        this.thirtyDayPercentageShiftStr = TextFormatting.FormatAsPercentage(mtgCard.getThirtyDayPercentageShift());
-        this.allTimeValueShift = mtgCard.getAllTimeValueShift();
-        this.allTimeValueShiftStr = TextFormatting.FormatAsUSD(mtgCard.getAllTimeValueShift());
-        this.allTimePercentageShift = mtgCard.getAllTimePercentageShift();
-        this.allTimePercentageShiftStr = TextFormatting.FormatAsPercentage(mtgCard.getAllTimePercentageShift());
+        this.setBlock(mtgCard.getBlock());
+        this.setCard(mtgCard.getCard());
+        this.setFormat(mtgCard.getFormat());
+        this.setQuantity(Integer.toString(mtgCollectionAsset.getQuantity()));
+        this.setValue(mtgCard.getMostRecentValue());
+        this.setValueStr(TextFormatting.FormatAsUSD(mtgCard.getMostRecentValue()));
+        this.setTotalValue(mtgCard.getMostRecentValue() * mtgCollectionAsset.getQuantity());
+        this.setTotalValueStr(TextFormatting.FormatAsUSD(mtgCard.getMostRecentValue() * mtgCollectionAsset.getQuantity()));
+        this.setTwentyFourHourValueShift(mtgCard.getTwentyFourHourValueShift());
+        this.setTwentyFourHourValueShiftStr(TextFormatting.FormatAsUSD(mtgCard.getTwentyFourHourValueShift()));
+        this.setTwentyFourHourPercentageShift(mtgCard.getTwentyFourHourPercentageShift());
+        this.setTwentyFourHourPercentageShiftStr(TextFormatting.FormatAsPercentage(mtgCard.getTwentyFourHourPercentageShift()));
+        this.setSevenDayValueShift(mtgCard.getSevenDayValueShift());
+        this.setSevenDayValueShiftStr(TextFormatting.FormatAsUSD(mtgCard.getSevenDayValueShift()));
+        this.setSevenDayPercentageShift(mtgCard.getSevenDayHourPercentageShift());
+        this.setSevenDayPercentageShiftStr(TextFormatting.FormatAsPercentage(mtgCard.getSevenDayHourPercentageShift()));
+        this.setThirtyDayValueShift(mtgCard.getThirtyDayValueShift());
+        this.setThirtyDayValueShiftStr(TextFormatting.FormatAsUSD(mtgCard.getThirtyDayValueShift()));
+        this.setThirtyDayPercentageShift(mtgCard.getThirtyDayPercentageShift());
+        this.setThirtyDayPercentageShiftStr(TextFormatting.FormatAsPercentage(mtgCard.getThirtyDayPercentageShift()));
+        this.setAllTimeValueShift(mtgCard.getAllTimeValueShift());
+        this.setAllTimeValueShiftStr(TextFormatting.FormatAsUSD(mtgCard.getAllTimeValueShift()));
+        this.setAllTimePercentageShift(mtgCard.getAllTimePercentageShift());
+        this.setAllTimePercentageShiftStr(TextFormatting.FormatAsPercentage(mtgCard.getAllTimePercentageShift()));
+        this.setUrl(mtgCard.getMtgGoldfishURL());
+        this.setImageUrl(mtgCard.getImageURL());
     }
 }

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MTG Card Collection: Remove Card From Deck</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+</head>
+<body>
+<form name="removeCardFromDeck" action="removeCardFromDeck">
+    Deck:
+    <br>
+    <select id="deck-drop-down" name="deck-drop-down">
+        <option value="no-deck">Select deck from list...</option>
+    </select>
+    <br><br><br>
+    Deck:
+    <br>
+    <select id="deck-list-drop-down" name="deck-list-drop-down">
+        <option value="no-card-selected">Select card from deck to remove...</option>
+    </select>
+    <br><br><br>
+    Quantity:
+    <br>
+    <input id="quantity" type="text" name="quantity" value="1">
+    <br><br><br>
+    <input type="submit" value="Remove Card from Deck">
+</form>
+<script>
+    var host = 'http://localhost:8080';
+    //var host = 'http://macbook-pro:8080';
+
+    function loadDropDownOptions() {
+        $('#deck-list-drop-down').load(host + '/getDeckCardDropDownOptions');
+    }
+
+    window.onload = function() {
+        loadDropDownOptions();
+    }
+</script>
+</body>
+</html>

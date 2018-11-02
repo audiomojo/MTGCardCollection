@@ -27,32 +27,37 @@ public class MTGCardDTOService {
     private MTGCardDTO mtgCardDTO;
 
     public MTGCardDTO AssembleMTGCardDTO(MTGCard mtgCard, MTGCollectionAsset mtgCollectionAsset, MTGUser mtgUser) {
+        mtgCardDTO = new MTGCardDTO();
         CopyMTGCard(mtgCard, mtgCollectionAsset);
         CopyMTGCardValueHistoryList(mtgCard);
         CopyMTGDeckList(mtgCard, mtgUser);
+
         return mtgCardDTO;
     }
 
     private void CopyMTGDeckList(MTGCard mtgCard, MTGUser mtgUser) {
-        List<MTGDeckDTO> mtgDeckDTOList = new ArrayList<>();
-        //List<MTGDeckAsset> mtgDeckAssetList = mtgDeckAssetRepository.findAllByCardIDAndUserID(mtgDeckAsset.getCardID(), mtgDeckAsset.getUserID());
-        List<MTGDeckAsset> mtgDeckAssetList = mtgDeckAssetRepository.findAllByCardIDAndUserID(mtgCard.getId(), mtgUser.getId());
-        for (MTGDeckAsset asset : mtgDeckAssetList) {
-            MTGDeckDTO mtgDeckDTO = new MTGDeckDTO();
-            MTGDeck mtgDeck = mtgDeckRepository.findTopById(asset.getDeckID());
-            mtgDeckDTO.setDeckName(mtgDeck.getName());
-            mtgDeckDTOList.add(mtgDeckDTO);
+        if (mtgCard != null) {
+            List<MTGDeckDTO> mtgDeckDTOList = new ArrayList<>();
+            //List<MTGDeckAsset> mtgDeckAssetList = mtgDeckAssetRepository.findAllByCardIDAndUserID(mtgDeckAsset.getCardID(), mtgDeckAsset.getUserID());
+            List<MTGDeckAsset> mtgDeckAssetList = mtgDeckAssetRepository.findAllByCardIDAndUserID(mtgCard.getId(), mtgUser.getId());
+            for (MTGDeckAsset asset : mtgDeckAssetList) {
+                MTGDeckDTO mtgDeckDTO = new MTGDeckDTO();
+                MTGDeck mtgDeck = mtgDeckRepository.findTopById(asset.getDeckID());
+                mtgDeckDTO.setDeckName(mtgDeck.getName());
+                mtgDeckDTOList.add(mtgDeckDTO);
+            }
+            mtgCardDTO.setDeckDTOList(mtgDeckDTOList);
         }
-        mtgCardDTO.setDeckDTOList(mtgDeckDTOList);
     }
 
     private void CopyMTGCardValueHistoryList(MTGCard mtgCard) {
+        if (mtgCard != null) {
         List<MTGCardValueHistory> mtgCardValueHistoryList = mtgCardValueHistoryRepository.findAllByCardIDOrderByModifiedDateDesc(mtgCard.getId());
         List<MTGCardValueHistoryDTO> mtgCardValueHistoryDTOList = new ArrayList<>();
         mtgCardDTO.setValueHistoryDTOList(mtgCardValueHistoryDTOList);
         for (MTGCardValueHistory mtgCardValueHistory : mtgCardValueHistoryList) {
             mtgCardValueHistoryDTOList.add(CopyMTGValueHistory(mtgCardValueHistory));
-        }
+        }}
     }
 
     private MTGCardValueHistoryDTO CopyMTGValueHistory(MTGCardValueHistory mtgCardValueHistory) {
@@ -66,21 +71,26 @@ public class MTGCardDTOService {
     }
 
     private void CopyMTGCard(MTGCard mtgCard, MTGCollectionAsset mtgCollectionAsset) {
-        mtgCardDTO = new MTGCardDTO();
-        mtgCardDTO.setBlock(mtgCard.getBlock());
-        mtgCardDTO.setCard(mtgCard.getCard());
-        mtgCardDTO.setFormat(mtgCard.getFormat());
-        mtgCardDTO.setQuantity(mtgCollectionAsset.getQuantity());
-        mtgCardDTO.setCurrentValue(mtgCard.getMostRecentValue());
-        mtgCardDTO.setTwentyFourHourValueShift(mtgCard.getTwentyFourHourValueShift());
-        mtgCardDTO.setTwentyFourHourPercentageShift(mtgCard.getTwentyFourHourPercentageShift());
-        mtgCardDTO.setSevenDayValueShift(mtgCard.getSevenDayValueShift());
-        mtgCardDTO.setSevenDayHourPercentageShift(mtgCard.getSevenDayHourPercentageShift());
-        mtgCardDTO.setThirtyDayValueShift(mtgCard.getThirtyDayValueShift());
-        mtgCardDTO.setThirtyDayPercentageShift(mtgCard.getThirtyDayPercentageShift());
-        mtgCardDTO.setAllTimeValueShift(mtgCard.getAllTimeValueShift());
-        mtgCardDTO.setAllTimePercentageShift(mtgCard.getAllTimePercentageShift());
-        mtgCardDTO.setMtgGoldfishURL(mtgCard.getMtgGoldfishURL());
-        mtgCardDTO.setNotes(mtgCollectionAsset.getNotes());
+        if (mtgCard != null) {
+            mtgCardDTO.setBlock(mtgCard.getBlock());
+            mtgCardDTO.setCard(mtgCard.getCard());
+            mtgCardDTO.setFormat(mtgCard.getFormat());
+            mtgCardDTO.setCurrentValue(mtgCard.getMostRecentValue());
+            mtgCardDTO.setTwentyFourHourValueShift(mtgCard.getTwentyFourHourValueShift());
+            mtgCardDTO.setTwentyFourHourPercentageShift(mtgCard.getTwentyFourHourPercentageShift());
+            mtgCardDTO.setSevenDayValueShift(mtgCard.getSevenDayValueShift());
+            mtgCardDTO.setSevenDayHourPercentageShift(mtgCard.getSevenDayHourPercentageShift());
+            mtgCardDTO.setThirtyDayValueShift(mtgCard.getThirtyDayValueShift());
+            mtgCardDTO.setThirtyDayPercentageShift(mtgCard.getThirtyDayPercentageShift());
+            mtgCardDTO.setAllTimeValueShift(mtgCard.getAllTimeValueShift());
+            mtgCardDTO.setAllTimePercentageShift(mtgCard.getAllTimePercentageShift());
+            mtgCardDTO.setMtgGoldfishURL(mtgCard.getMtgGoldfishURL());
+            mtgCardDTO.setMtgImageURL(mtgCard.getImageURL());
+        }
+
+        if (mtgCollectionAsset != null) {
+            mtgCardDTO.setQuantity(mtgCollectionAsset.getQuantity());
+            mtgCardDTO.setNotes(mtgCollectionAsset.getNotes());
+        }
     }
 }

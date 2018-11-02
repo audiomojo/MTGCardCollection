@@ -27,4 +27,5 @@ public class MTGCard extends AbstractEntity {
     private String mtgGoldfishURL;
     private Date lastValueCheck;
     private double mostRecentValue;
+    private String imageURL;
 }

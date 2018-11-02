@@ -3,6 +3,7 @@ package com.xantech.mtgcardcollection.services;
 import com.xantech.mtgcardcollection.dao.*;
 import com.xantech.mtgcardcollection.dto.MTGCardDTO;
 import com.xantech.mtgcardcollection.enums.CollectionAdjustment;
+import com.xantech.mtgcardcollection.helpers.MTGGoldFishCardValueEngine;
 import com.xantech.mtgcardcollection.helpers.MTGGoldfishURLParser;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +36,16 @@ public class MTGCardService {
     @Autowired
     MTGDeckService mtgDeckService;
 
+    @Autowired
+    MTGGoldFishCardValueEngine mtgGoldFishCardValueEngine;
+
     public MTGCardDTO LookupCard(String url, MTGUser mtgUser) {
         MTGCard mtgCard = mtgCardRepository.findDistinctByMtgGoldfishURL(url);
-        MTGCollectionAsset mtgCollectionAsset = mtgCollectionAssetService.getMtgCollectionAssetRepository().findTopByCardIDAndUserID(mtgCard.getId(), mtgUser.getId());
+        MTGCollectionAsset mtgCollectionAsset = null;
+
+        if (mtgCard != null) {
+           mtgCollectionAsset = mtgCollectionAssetService.getMtgCollectionAssetRepository().findTopByCardIDAndUserID(mtgCard.getId(), mtgUser.getId());
+        }
 
         return mtgCardDTOService.AssembleMTGCardDTO(mtgCard, mtgCollectionAsset, mtgUser);
     }
@@ -96,6 +104,7 @@ public class MTGCardService {
         mtgCard.setAllTimeValueShift(0);
         mtgCard.setAllTimePercentageShift(0);
         mtgCard.setLastValueCheck(date);
+        mtgCard.setImageURL(mtgGoldFishCardValueEngine.getImageURL(mtgCard));
         mtgCardRepository.save(mtgCard);
         return mtgCard;
     }
@@ -110,6 +119,8 @@ public class MTGCardService {
         mtgCard.setThirtyDayValueShift(CalculateValueShift(mtgCardValueHistoryList, 30));
         mtgCard.setThirtyDayPercentageShift(CalculatePercentageShift(mtgCardValueHistoryList, 30));
         mtgCard.setAllTimeValueShift(CalculateValueShift(mtgCardValueHistoryList, mtgCardValueHistoryList.size()-1));
+//        if (mtgCard.getCard().compareTo("Atraxa+Praetors+Voice") == 0)
+//            System.out.println(mtgCard);
         mtgCard.setAllTimePercentageShift(CalculatePercentageShift(mtgCardValueHistoryList, mtgCardValueHistoryList.size()-1));
         mtgCard.setMostRecentValue(mtgCardValueHistoryList.get(0).getValue());
         mtgCardRepository.save(mtgCard);
@@ -129,7 +140,8 @@ public class MTGCardService {
         double valueShift = 0.0;
 
         if ((days > 0) && (mtgCardValueHistoryList.size() >= days+1)){
-            valueShift = mtgCardValueHistoryList.get(0).getValue() / mtgCardValueHistoryList.get(days).getValue()-1;
+            valueShift = ((mtgCardValueHistoryList.get(0).getValue()-mtgCardValueHistoryList.get(days).getValue())/mtgCardValueHistoryList.get(days).getValue());
+            //valueShift = mtgCardValueHistoryList.get(0).getValue() / mtgCardValueHistoryList.get(days).getValue();
         }
 
         return valueShift;
@@ -147,11 +159,11 @@ public class MTGCardService {
             if ((timeDiff > 10800000) || (override.compareTo("TRUE") == 0)) { // 3Hours 10800000
                 System.out.println(index++ + " of " + mtgCardList.size() + " : " + mtgCard.toString());
                 updateCardValue(mtgCard, date);
-                try {
-                    Thread.sleep(150);
-                } catch (InterruptedException ex) {
-                    System.out.println("Thread Exception: " + ex.toString());
-                }
+//                try {
+//                    Thread.sleep(100);
+//                } catch (InterruptedException ex) {
+//                    System.out.println("Thread Exception: " + ex.toString());
+//                }
             }
             else
                 System.out.println(index++ + " of " + mtgCardList.size() + " : [Have Recent Value] -- " + mtgCard.toString());
@@ -164,5 +176,9 @@ public class MTGCardService {
     private void updateCardValue(MTGCard mtgCard, Date date){
         mtgCardValueHistoryService.updateCardValue(mtgCard, date);
         UpdateCardValueMetrics(mtgCard, date);
+    }
+
+    public MTGCard getMTGCardByID(long cardID) {
+        return mtgCardRepository.findDistinctById(cardID);
     }
 }

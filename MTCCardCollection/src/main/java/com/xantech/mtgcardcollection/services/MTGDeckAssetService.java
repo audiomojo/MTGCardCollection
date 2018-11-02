@@ -6,7 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -14,6 +17,9 @@ import java.util.Date;
 public class MTGDeckAssetService {
     @Autowired
     MTGDeckAssetRepository mtgDeckAssetRepository;
+    
+//    @Autowired
+//    MTGCardService mtgCardService;
 
     public MTGDeckAsset AddDeckAsset(MTGCard mtgCard, MTGDeck mtgDeck, MTGUser mtgUser, int count, Date date) {
         MTGDeckAsset mtgDeckAsset = GetMTGDeckAsset(mtgCard, mtgUser, mtgDeck, date);
@@ -57,4 +63,25 @@ public class MTGDeckAssetService {
         return mtgDeckAsset;
     }
 
+    public String getDeckCardDropDownOptions(long deckID) {
+        List<MTGDeckAsset> mtgDeckAssetList = mtgDeckAssetRepository.findAllByDeckID(deckID);
+        List<MTGCard> mtgCardList = new ArrayList<>();
+
+//        for (MTGDeckAsset mtgDeckAsset : mtgDeckAssetList) {
+//            mtgCardList.add(mtgCardService.getMTGCardByID(mtgDeckAsset.getCardID()));
+//        }
+
+        mtgCardList.sort(Comparator.comparing(mtgCard -> mtgCard.getCard()));
+
+        String result = "<option value=\"no-card-selected\">Select card from deck to remove...</option>";
+        for (MTGCard mtgCard : mtgCardList) {
+            result += "<option value=\"" + mtgCard.getId() + "\" >" + mtgCard.getCard() + "</option>";
+        }
+
+        return result;
+    }
+
+    public String getDeckList(long deckID) {
+        return null;
+    }
 }

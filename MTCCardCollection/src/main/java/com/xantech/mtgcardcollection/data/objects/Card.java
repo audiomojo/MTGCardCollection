@@ -35,35 +35,35 @@ public class Card implements Serializable {
 //        return clone;
 //    }
 
-    public double MeasureValue() {
-        ScreenScrapeCardValue screenScrapeCardValue = new ScreenScrapeCardValue(block, card, format);
-        double value = Double.parseDouble(screenScrapeCardValue.getPrice());
-        if (valueHistory == null)
-            valueHistory = new ValueHistory();
-        valueHistory.AddNode(new ValueNode(new Date(), value));
+//    public double MeasureValue() {
+//        //ScreenScrapeCardValue screenScrapeCardValue = new ScreenScrapeCardValue(block, card, format);
+//        //double value = Double.parseDouble(screenScrapeCardValue.getPrice());
+//        if (valueHistory == null)
+//            valueHistory = new ValueHistory();
+//        valueHistory.AddNode(new ValueNode(new Date(), value));
+//
+//        if(cardValueMetrics == null)
+//            cardValueMetrics = new CardValueMetrics();
+//        cardValueMetrics.setTwentyFourHourValueShift(valueHistory.Get24HourValueShift());
+//        cardValueMetrics.setTwentyFourHourPercentageShift(valueHistory.Get24HourPercentageShift());
+//        cardValueMetrics.setSevenDayValueShift(valueHistory.Get7DayValueShift());
+//        cardValueMetrics.setSevenDayHourPercentageShift(valueHistory.Get7DayPercentageShift());
+//        cardValueMetrics.setThirtyDayValueShift(valueHistory.Get30DayValueShift());
+//        cardValueMetrics.setThirtyDayPercentageShift(valueHistory.Get30DayPercentageShift());
+//        cardValueMetrics.setAllTimeValueShift(valueHistory.GetAllTimeValueShift());
+//        cardValueMetrics.setAllTimePercentageShift(valueHistory.GetAllTimePercentageShift());
+//        return value;
+//    }
 
-        if(cardValueMetrics == null)
-            cardValueMetrics = new CardValueMetrics();
-        cardValueMetrics.setTwentyFourHourValueShift(valueHistory.Get24HourValueShift());
-        cardValueMetrics.setTwentyFourHourPercentageShift(valueHistory.Get24HourPercentageShift());
-        cardValueMetrics.setSevenDayValueShift(valueHistory.Get7DayValueShift());
-        cardValueMetrics.setSevenDayHourPercentageShift(valueHistory.Get7DayPercentageShift());
-        cardValueMetrics.setThirtyDayValueShift(valueHistory.Get30DayValueShift());
-        cardValueMetrics.setThirtyDayPercentageShift(valueHistory.Get30DayPercentageShift());
-        cardValueMetrics.setAllTimeValueShift(valueHistory.GetAllTimeValueShift());
-        cardValueMetrics.setAllTimePercentageShift(valueHistory.GetAllTimePercentageShift());
-        return value;
-    }
-
-    public double GetCardValue() {
-        double cardValue;
-
-        ValueNode valueNode = valueHistory.GetTodaysValue();
-        if (valueNode != null)
-            cardValue = valueNode.getValue();
-        else
-            cardValue = MeasureValue();
-
-        return cardValue;
-    }
+//    public double GetCardValue() {
+//        double cardValue;
+//
+//        ValueNode valueNode = valueHistory.GetTodaysValue();
+//        if (valueNode != null)
+//            cardValue = valueNode.getValue();
+//        else
+//            cardValue = MeasureValue();
+//
+//        return cardValue;
+//    }
 }

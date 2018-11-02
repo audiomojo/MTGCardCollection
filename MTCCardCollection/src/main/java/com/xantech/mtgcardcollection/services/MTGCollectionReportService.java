@@ -24,6 +24,7 @@ public class MTGCollectionReportService {
     public List<CardViewModel> GetModel(String format, String override, MTGUser mtgUser) {
         List<MTGCard> mtgCardList = mtgCardService.UpdateCardValues(override);
         List<MTGCollectionAsset> mtgCollectionAssetList = mtgCollectionAssetRepository.findAllByUserID(mtgUser.getId());
+        mtgCollectionAssetList = mtgCollectionAssetList.stream().filter(asset -> asset.getQuantity() != 0).collect(Collectors.toList());
         List<CardViewModel> cardViewModelList = GetModelCollection(mtgCardList, mtgCollectionAssetList);
         SortCollection(cardViewModelList, format);
         return cardViewModelList;
@@ -51,6 +52,12 @@ public class MTGCollectionReportService {
             Sort30DayValueChange(cardViewModelList);
         else if (format.compareTo("ALL-TIME-VALUE-CHANGE") == 0)
             SortAllTimeValueChange(cardViewModelList);
+        else if (format.compareTo("DAY-PERCENT-CHANGE") == 0)
+            SortDayPercentChange(cardViewModelList);
+        else if (format.compareTo("7-DAY-PERCENT-CHANGE") == 0)
+            Sort7DayPercentChange(cardViewModelList);
+        else if (format.compareTo("ALL-TIME-PERCENT-CHANGE") == 0)
+            SortAllTimePercentChange(cardViewModelList);
         else {
             SortCard(cardViewModelList);
         }
@@ -83,6 +90,19 @@ public class MTGCollectionReportService {
     private void SortAllTimeValueChange(List<CardViewModel> cardViewModelList) {
         Collections.sort(cardViewModelList, new SortByAllTimeValueChange());
     }
+
+    private void SortDayPercentChange(List<CardViewModel> cardViewModelList) {
+        Collections.sort(cardViewModelList, new SortByDayPercentChange());
+    }
+
+    private void Sort7DayPercentChange(List<CardViewModel> cardViewModelList) {
+        Collections.sort(cardViewModelList, new SortBy7DayPercentChange());
+    }
+
+    private void SortAllTimePercentChange(List<CardViewModel> cardViewModelList) {
+        Collections.sort(cardViewModelList, new SortByAllTimePercentChange());
+    }
+
 
 //    public Card LookupCard(String block, String cardName, String format) {
 //        Card result = null;
@@ -154,6 +174,33 @@ class SortByAllTimeValueChange implements Comparator<CardViewModel>
     public int compare(CardViewModel card1, CardViewModel card2)
     {
         double sortValue = card2.getAllTimeValueShift()*100 - card1.getAllTimeValueShift()*100;
+        return (int) sortValue;
+    }
+}
+
+class SortByDayPercentChange implements Comparator<CardViewModel>
+{
+    public int compare(CardViewModel card1, CardViewModel card2)
+    {
+        double sortValue = card2.getTwentyFourHourPercentageShift()*100 - card1.getTwentyFourHourPercentageShift()*100;
+        return (int) sortValue;
+    }
+}
+
+class SortBy7DayPercentChange implements Comparator<CardViewModel>
+{
+    public int compare(CardViewModel card1, CardViewModel card2)
+    {
+        double sortValue = card2.getSevenDayPercentageShift()*100 - card1.getSevenDayPercentageShift()*100;
+        return (int) sortValue;
+    }
+}
+
+class SortByAllTimePercentChange implements Comparator<CardViewModel>
+{
+    public int compare(CardViewModel card1, CardViewModel card2)
+    {
+        double sortValue = card2.getAllTimePercentageShift()*100 - card1.getAllTimePercentageShift()*100;
         return (int) sortValue;
     }
 }

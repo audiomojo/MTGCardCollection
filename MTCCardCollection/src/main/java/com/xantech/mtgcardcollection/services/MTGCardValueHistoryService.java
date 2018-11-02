@@ -25,12 +25,27 @@ public class MTGCardValueHistoryService {
     private MTGCardValueHistory mtgCardValueHistory;
 
     public MTGCardValueHistory updateCardValue(MTGCard mtgCard, Date date) {
+        int tries = 0;
+        double cardValue = 0;
+        int sleepCount = 1000;
+        int maxTries = 30;
 
-        double cardValue = mtgGoldFishCardValueEngine.getCardValue(mtgCard);
+        do {
+            cardValue = mtgGoldFishCardValueEngine.getCardValue(mtgCard);
+            tries++;
+            if (cardValue == 0) {
+                System.out.println("Try # " + tries + " returned a value of 0 which indicates throttling from MTGGoldfish.  Sleeping for " + sleepCount*tries/1000 + " seconds then resuming");
+                try {
+                    Thread.sleep(sleepCount*tries);
+                } catch (InterruptedException ex) {
+                    System.out.println("Thread Exception: " + ex.toString());
+                }
+            }
+        } while ((cardValue == 0) && (tries < maxTries));
 
         mtgCardValueHistory = mtgCardValueHistoryRepository.findTopByCardIDOrderByModifiedDateDesc(mtgCard.getId());
 
-        if ((mtgCardValueHistory == null) || (SameDay(mtgCardValueHistory.getDate()) == false)) {
+        if ((mtgCardValueHistory == null) || ((SameDay(mtgCardValueHistory.getDate()) == false) && (mtgCard.getMostRecentValue() != -1.0))) {
             mtgCardValueHistory = new MTGCardValueHistory();
             mtgCardValueHistory.setCardID(mtgCard.getId());
             mtgCardValueHistory.setCreatedDate(date);
@@ -62,4 +77,10 @@ public class MTGCardValueHistoryService {
     }
 
 
+    public String GetMTGGoldfishCardPrice(String url) {
+        MTGCard mtgCard = new MTGCard();
+        mtgCard.setMtgGoldfishURL(url);
+        mtgCard.setFormat("paper");
+        return Double.toString(mtgGoldFishCardValueEngine.getCardValue(mtgCard));
+    }
 }

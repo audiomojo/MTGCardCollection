@@ -3,6 +3,7 @@ package com.xantech.mtgcardcollection.controllers;
 import com.xantech.mtgcardcollection.dao.MTGDeck;
 import com.xantech.mtgcardcollection.dao.MTGUser;
 import com.xantech.mtgcardcollection.data.collections.CardCollection;
+import com.xantech.mtgcardcollection.data.objects.CardViewModel;
 import com.xantech.mtgcardcollection.dto.MTGCardDTO;
 import com.xantech.mtgcardcollection.dto.MTGDeckListDTO;
 import com.xantech.mtgcardcollection.enums.CollectionAdjustment;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 @RestController
 public class MTGCardCollectionController {
@@ -37,12 +40,12 @@ public class MTGCardCollectionController {
     @Autowired
     MTGDeckService mtgDeckService;
 
-    @RequestMapping("/cardvalue")
-    public ScreenScrapeCardValue screenScrapeCardValue(@RequestParam(value="block", defaultValue="Return+to+Ravnica") String block,
-                                                       @RequestParam(value="Card", defaultValue="Jace+Architect+of+Thought") String card,
-                                                       @RequestParam(value="format", defaultValue="#paper") String format) {
-        return new ScreenScrapeCardValue(block, card, format);
-    }
+    @Autowired
+    MTGDeckAssetService mtgDeckAssetService;
+
+    @Autowired
+    MTGCardValueHistoryService mtgCardValueHistoryService;
+
 
     @RequestMapping("/addCard")
     public MTGCardDTO processAddCard(@RequestParam(value="url") String url,
@@ -73,10 +76,17 @@ public class MTGCardCollectionController {
         return mtgCardService.LookupCard(url, mtgUserService.GetUser());
     }
 
+    @RequestMapping("/getMTGGoldfishCardPrice")
+    public String getMTGGoldfishCardPrice(@RequestParam(value="url") String url) {
+        return mtgCardValueHistoryService.GetMTGGoldfishCardPrice(url);
+    }
+
     @RequestMapping("/collectionSummary")
     public String cardValueSummary(@RequestParam(value="format", defaultValue = "CARD") String format,
                                    @RequestParam(value="override", defaultValue="FALSE") String override) {
-        return new CardValueSummary(format).CardValueSummaryReportHTML(override);
+        List<CardViewModel> cardViewModelList = mtgCollectionReportService.GetModel(format, override, mtgUserService.GetUser());
+
+        return new CardValueSummary(format).CardValueSummaryReportHTML(override,cardViewModelList);
     }
 
     @RequestMapping("/collectionSummaryMVC")
@@ -127,8 +137,8 @@ public class MTGCardCollectionController {
     }
 
     @RequestMapping("/getDeckList")
-    public MTGDeckListDTO getDeckList(@RequestParam(value="decks-drop-down") String deckName) {
-        return mtgDeckService.getDeckList(deckName);
+    public MTGDeckListDTO getDeckList(@RequestParam(value="decks-drop-down") String deckID) {
+        return mtgDeckService.getDeckList(deckID);
     }
 
     @RequestMapping("/totalCollectionValue")
@@ -136,6 +146,8 @@ public class MTGCardCollectionController {
         return mtgCollectionAssetService.totalCollectionValue(mtgUserService.GetUser());
     }
 
-
-
+    @RequestMapping("/getDeckCardDropDownOptions")
+    public String getDeckCardDropDownOptions(@RequestParam(value="deck-drop-down") long deckID) {
+        return mtgDeckAssetService.getDeckCardDropDownOptions(deckID);
+    }
 }
