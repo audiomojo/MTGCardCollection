@@ -18,26 +18,7 @@
             <br>
             <textarea name="notes" rows = 5 cols=100></textarea>
             <br><br><br>
-            Deck: (Leave blank if card is not in a deck)
-            <br>
-            <select id="decks-drop-down" name="decks-drop-down">
-                <option value="no-deck">Select deck from list if card is in a deck</option>
-            </select>
-            <br><br><br>
             <input type="submit" value="Remove Card(s) from Collection">
         </form>
-        <script>
-            var host = 'http://localhost:8080';
-            //var host = 'http://macbook-pro:8080';
-
-            function loadDropDownOptions() {
-                $('#decks-drop-down').load(host + '/getDeckDropDownOptions');
-            }
-
-            window.onload = function() {
-                loadDropDownOptions();
-                document.getElementById("url").focus();
-            }
-        </script>
     </body>
 </html>

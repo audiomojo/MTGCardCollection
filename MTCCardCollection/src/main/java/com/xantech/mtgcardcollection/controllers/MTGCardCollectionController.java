@@ -50,17 +50,15 @@ public class MTGCardCollectionController {
     @RequestMapping("/addCard")
     public MTGCardDTO processAddCard(@RequestParam(value="url") String url,
                                      @RequestParam(value="quantity") String quantity,
-                                     @RequestParam(value="notes") String notes,
-                                     @RequestParam(value="decks-drop-down") String deck){
-        return  mtgCardService.AdjustCollection(CollectionAdjustment.ADD, url, Integer.parseInt(quantity), notes, mtgUserService.GetUser(), deck);
+                                     @RequestParam(value="notes") String notes){
+        return  mtgCardService.AdjustCollection(CollectionAdjustment.ADD, url, Integer.parseInt(quantity), notes, mtgUserService.GetUser());
     }
 
     @RequestMapping("/deleteCard")
     public MTGCardDTO processDeleteCard(@RequestParam(value="url") String url,
                                         @RequestParam(value="quantity") String quantity,
-                                        @RequestParam(value="notes") String notes,
-                                        @RequestParam(value="decks-drop-down") String deckID){
-        return  mtgCardService.AdjustCollection(CollectionAdjustment.REMOVE, url, Integer.parseInt(quantity), notes, mtgUserService.GetUser(), deckID);
+                                        @RequestParam(value="notes") String notes){
+        return  mtgCardService.AdjustCollection(CollectionAdjustment.REMOVE, url, Integer.parseInt(quantity), notes, mtgUserService.GetUser());
     }
 
     @RequestMapping("/addUser")

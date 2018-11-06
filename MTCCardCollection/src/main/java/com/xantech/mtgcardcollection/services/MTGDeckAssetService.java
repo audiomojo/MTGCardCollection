@@ -18,8 +18,8 @@ public class MTGDeckAssetService {
     @Autowired
     MTGDeckAssetRepository mtgDeckAssetRepository;
     
-//    @Autowired
-//    MTGCardService mtgCardService;
+    @Autowired
+    MTGCardService mtgCardService;
 
     public MTGDeckAsset AddDeckAsset(MTGCard mtgCard, MTGDeck mtgDeck, MTGUser mtgUser, int count, Date date) {
         MTGDeckAsset mtgDeckAsset = GetMTGDeckAsset(mtgCard, mtgUser, mtgDeck, date);
@@ -67,9 +67,9 @@ public class MTGDeckAssetService {
         List<MTGDeckAsset> mtgDeckAssetList = mtgDeckAssetRepository.findAllByDeckID(deckID);
         List<MTGCard> mtgCardList = new ArrayList<>();
 
-//        for (MTGDeckAsset mtgDeckAsset : mtgDeckAssetList) {
-//            mtgCardList.add(mtgCardService.getMTGCardByID(mtgDeckAsset.getCardID()));
-//        }
+        for (MTGDeckAsset mtgDeckAsset : mtgDeckAssetList) {
+            mtgCardList.add(mtgCardService.getMTGCardByID(mtgDeckAsset.getCardID()));
+        }
 
         mtgCardList.sort(Comparator.comparing(mtgCard -> mtgCard.getCard()));
 

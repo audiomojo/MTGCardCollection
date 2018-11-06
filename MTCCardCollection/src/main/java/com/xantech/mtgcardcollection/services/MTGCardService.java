@@ -31,12 +31,6 @@ public class MTGCardService {
     MTGCollectionAssetService mtgCollectionAssetService;
 
     @Autowired
-    MTGDeckAssetService mtgDeckAssetService;
-
-    @Autowired
-    MTGDeckService mtgDeckService;
-
-    @Autowired
     MTGGoldFishCardValueEngine mtgGoldFishCardValueEngine;
 
     public MTGCardDTO LookupCard(String url, MTGUser mtgUser) {
@@ -50,28 +44,16 @@ public class MTGCardService {
         return mtgCardDTOService.AssembleMTGCardDTO(mtgCard, mtgCollectionAsset, mtgUser);
     }
 
-    public MTGCardDTO AdjustCollection(CollectionAdjustment adjustment, String url, int count, String notes, MTGUser mtgUser, String deckID) {
+    public MTGCardDTO AdjustCollection(CollectionAdjustment adjustment, String url, int count, String notes, MTGUser mtgUser) {
         Date date = new Date();
         MTGCard mtgCard = GetMTGCard(url, date);
         MTGCollectionAsset mtgCollectionAsset = null;
-        MTGDeckAsset mtgDeckAsset = null;
-        MTGDeck mtgDeck = null;
-        if (deckID.compareTo("no-deck") != 0)
-            mtgDeck = mtgDeckService.GetDeck(Integer.parseInt(deckID));
 
         if (adjustment == CollectionAdjustment.ADD) {
             mtgCollectionAsset = mtgCollectionAssetService.AddCollectionAsset(mtgCard, mtgUser, count, notes, date);
             updateCardValue(mtgCard, date);
         } else if (adjustment == CollectionAdjustment.REMOVE) {
             mtgCollectionAsset = mtgCollectionAssetService.RemoveCollectionAsset(mtgCard, mtgUser, count, notes, date);
-        }
-
-        if (mtgDeck != null){
-            if (adjustment == CollectionAdjustment.ADD){
-                mtgDeckAsset = mtgDeckAssetService.AddDeckAsset(mtgCard, mtgDeck, mtgUser, count, date);
-            } else if (adjustment == CollectionAdjustment.REMOVE){
-                mtgDeckAsset = mtgDeckAssetService.RemoveDeckAsset(mtgCard, mtgDeck, mtgUser, count, date);
-            }
         }
 
         return mtgCardDTOService.AssembleMTGCardDTO(mtgCard, mtgCollectionAsset, mtgUser);
@@ -119,8 +101,6 @@ public class MTGCardService {
         mtgCard.setThirtyDayValueShift(CalculateValueShift(mtgCardValueHistoryList, 30));
         mtgCard.setThirtyDayPercentageShift(CalculatePercentageShift(mtgCardValueHistoryList, 30));
         mtgCard.setAllTimeValueShift(CalculateValueShift(mtgCardValueHistoryList, mtgCardValueHistoryList.size()-1));
-//        if (mtgCard.getCard().compareTo("Atraxa+Praetors+Voice") == 0)
-//            System.out.println(mtgCard);
         mtgCard.setAllTimePercentageShift(CalculatePercentageShift(mtgCardValueHistoryList, mtgCardValueHistoryList.size()-1));
         mtgCard.setMostRecentValue(mtgCardValueHistoryList.get(0).getValue());
         mtgCardRepository.save(mtgCard);
@@ -141,7 +121,6 @@ public class MTGCardService {
 
         if ((days > 0) && (mtgCardValueHistoryList.size() >= days+1)){
             valueShift = ((mtgCardValueHistoryList.get(0).getValue()-mtgCardValueHistoryList.get(days).getValue())/mtgCardValueHistoryList.get(days).getValue());
-            //valueShift = mtgCardValueHistoryList.get(0).getValue() / mtgCardValueHistoryList.get(days).getValue();
         }
 
         return valueShift;
@@ -179,6 +158,10 @@ public class MTGCardService {
     }
 
     public MTGCard getMTGCardByID(long cardID) {
-        return mtgCardRepository.findDistinctById(cardID);
+        MTGCard result = null;
+
+        result = mtgCardRepository.findDistinctById(cardID);
+
+        return result;
     }
 }
