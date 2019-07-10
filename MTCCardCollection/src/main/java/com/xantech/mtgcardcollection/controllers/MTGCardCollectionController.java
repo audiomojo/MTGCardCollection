@@ -79,6 +79,12 @@ public class MTGCardCollectionController {
         return mtgCardValueHistoryService.GetMTGGoldfishCardPrice(url);
     }
 
+    @RequestMapping("/collectionModel")
+    public List<CardViewModel> collectionModel(@RequestParam(value="format", defaultValue = "CARD") String format,
+                                   @RequestParam(value="override", defaultValue="FALSE") String override) {
+        return mtgCollectionReportService.GetModel(format, override, mtgUserService.GetUser());
+    }
+
     @RequestMapping("/collectionSummary")
     public String cardValueSummary(@RequestParam(value="format", defaultValue = "CARD") String format,
                                    @RequestParam(value="override", defaultValue="FALSE") String override) {

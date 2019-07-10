@@ -135,7 +135,7 @@ public class MTGCardService {
         for (MTGCard mtgCard : mtgCardList) {
             long lastUpdateTime = mtgCard.getLastValueCheck().getTime();
             long timeDiff = nowTime-lastUpdateTime;
-            if ((timeDiff > 10800000) || (override.compareTo("TRUE") == 0)) { // 3Hours 10800000
+            if ((timeDiff > 28800000) || (override.compareTo("TRUE") == 0)) { // 3Hours 10800000; 8 Hours: 28800000
                 System.out.println(index++ + " of " + mtgCardList.size() + " : " + mtgCard.toString());
                 updateCardValue(mtgCard, date);
 //                try {

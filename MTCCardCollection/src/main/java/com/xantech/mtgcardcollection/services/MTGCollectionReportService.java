@@ -56,6 +56,8 @@ public class MTGCollectionReportService {
             SortDayPercentChange(cardViewModelList);
         else if (format.compareTo("7-DAY-PERCENT-CHANGE") == 0)
             Sort7DayPercentChange(cardViewModelList);
+        else if (format.compareTo("30-DAY-PERCENT-CHANGE") == 0)
+            Sort30DayPercentChange(cardViewModelList);
         else if (format.compareTo("ALL-TIME-PERCENT-CHANGE") == 0)
             SortAllTimePercentChange(cardViewModelList);
         else {
@@ -99,22 +101,13 @@ public class MTGCollectionReportService {
         Collections.sort(cardViewModelList, new SortBy7DayPercentChange());
     }
 
+    private void Sort30DayPercentChange(List<CardViewModel> cardViewModelList) {
+        Collections.sort(cardViewModelList, new SortBy30DayPercentChange());
+    }
+
     private void SortAllTimePercentChange(List<CardViewModel> cardViewModelList) {
         Collections.sort(cardViewModelList, new SortByAllTimePercentChange());
     }
-
-
-//    public Card LookupCard(String block, String cardName, String format) {
-//        Card result = null;
-//
-//        for (Card card : collection) {
-//            if ((card.getBlock().compareTo(block) == 0) && (card.getCard().compareTo(cardName) == 0) && (card.getFormat().compareTo(format) == 0)) {
-//                result = card;
-//                break;
-//            }
-//        }
-//        return result;
-//    }
 }
 
 class SortByCard implements Comparator<CardViewModel>{
@@ -137,8 +130,14 @@ class SortByBlockCard implements Comparator<CardViewModel>{
 class SortByPrice implements Comparator<CardViewModel>{
     public int compare(CardViewModel card1, CardViewModel card2)
     {
-        double sortValue = card1.getValue()*100 - card2.getValue()*100;
-        return (int) sortValue*-1;
+        double sortValue = card2.getValue()*100 - card1.getValue()*100;
+
+        if (sortValue > 0)
+            return 1;
+        else if (sortValue < 0)
+            return -1;
+        else
+            return 0;
     }
 }
 
@@ -147,7 +146,13 @@ class SortByDayValueChange implements Comparator<CardViewModel>
     public int compare(CardViewModel card1, CardViewModel card2)
     {
         double sortValue = card2.getTwentyFourHourValueShift()*100 - card1.getTwentyFourHourValueShift()*100;
-        return (int) sortValue;
+
+        if (sortValue > 0)
+            return 1;
+        else if (sortValue < 0)
+            return -1;
+        else
+            return 0;
     }
 }
 
@@ -156,7 +161,13 @@ class SortBy7DayValueChange implements Comparator<CardViewModel>
     public int compare(CardViewModel card1, CardViewModel card2)
     {
         double sortValue = card2.getSevenDayValueShift()*100 - card1.getSevenDayValueShift()*100;
-        return (int) sortValue;
+
+        if (sortValue > 0)
+            return 1;
+        else if (sortValue < 0)
+            return -1;
+        else
+            return 0;
     }
 }
 
@@ -165,7 +176,13 @@ class SortBy30DayValueChange implements Comparator<CardViewModel>
     public int compare(CardViewModel card1, CardViewModel card2)
     {
         double sortValue = card2.getThirtyDayValueShift()*100 - card1.getThirtyDayValueShift()*100;
-        return (int) sortValue;
+
+        if (sortValue > 0)
+            return 1;
+        else if (sortValue < 0)
+            return -1;
+        else
+            return 0;
     }
 }
 
@@ -174,7 +191,13 @@ class SortByAllTimeValueChange implements Comparator<CardViewModel>
     public int compare(CardViewModel card1, CardViewModel card2)
     {
         double sortValue = card2.getAllTimeValueShift()*100 - card1.getAllTimeValueShift()*100;
-        return (int) sortValue;
+
+        if (sortValue > 0)
+            return 1;
+        else if (sortValue < 0)
+            return -1;
+        else
+            return 0;
     }
 }
 
@@ -183,7 +206,13 @@ class SortByDayPercentChange implements Comparator<CardViewModel>
     public int compare(CardViewModel card1, CardViewModel card2)
     {
         double sortValue = card2.getTwentyFourHourPercentageShift()*100 - card1.getTwentyFourHourPercentageShift()*100;
-        return (int) sortValue;
+
+        if (sortValue > 0)
+            return 1;
+        else if (sortValue < 0)
+            return -1;
+        else
+            return 0;
     }
 }
 
@@ -192,7 +221,28 @@ class SortBy7DayPercentChange implements Comparator<CardViewModel>
     public int compare(CardViewModel card1, CardViewModel card2)
     {
         double sortValue = card2.getSevenDayPercentageShift()*100 - card1.getSevenDayPercentageShift()*100;
-        return (int) sortValue;
+
+        if (sortValue > 0)
+            return 1;
+        else if (sortValue < 0)
+            return -1;
+        else
+            return 0;
+    }
+}
+
+class SortBy30DayPercentChange implements Comparator<CardViewModel>
+{
+    public int compare(CardViewModel card1, CardViewModel card2)
+    {
+        double sortValue = card2.getThirtyDayPercentageShift()*100 - card1.getThirtyDayPercentageShift()*100;
+
+        if (sortValue > 0)
+            return 1;
+        else if (sortValue < 0)
+            return -1;
+        else
+            return 0;
     }
 }
 
@@ -201,7 +251,13 @@ class SortByAllTimePercentChange implements Comparator<CardViewModel>
     public int compare(CardViewModel card1, CardViewModel card2)
     {
         double sortValue = card2.getAllTimePercentageShift()*100 - card1.getAllTimePercentageShift()*100;
-        return (int) sortValue;
+
+        if (sortValue > 0)
+            return 1;
+        else if (sortValue < 0)
+            return -1;
+        else
+            return 0;
     }
 }
 

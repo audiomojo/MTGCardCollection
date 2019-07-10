@@ -65,4 +65,9 @@ public class CardViewModel {
         this.setUrl(mtgCard.getMtgGoldfishURL());
         this.setImageUrl(mtgCard.getImageURL());
     }
+
+    public String toString() {
+        return block + " - " + card + " - " + format + " - " + quantity + " - " + valueStr + " - " + totalValueStr + " - " + twentyFourHourValueShiftStr;
+    }
+
 }
