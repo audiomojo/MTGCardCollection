@@ -16,12 +16,10 @@ public class CardValueSummary {
         this.format = format;
     }
 
-    public String CardValueSummaryReportHTML(String override, List<CardViewModel> cardViewModelList)
+    public String CardValueSummaryReportHTML(List<CardViewModel> cardViewModelList)
     {
         StringBuilder cardValueSummaryReportHTML = new StringBuilder();
-        //cardCollection.SortCollection(format);
         double totalCollectionValue = 0.0;
-
 
         cardValueSummaryReportHTML.append("<html>");
         cardValueSummaryReportHTML.append("<head>");

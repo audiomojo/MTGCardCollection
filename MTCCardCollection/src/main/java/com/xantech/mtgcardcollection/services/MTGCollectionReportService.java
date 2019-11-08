@@ -21,8 +21,8 @@ public class MTGCollectionReportService {
     @Autowired
     MTGCollectionAssetRepository mtgCollectionAssetRepository;
 
-    public List<CardViewModel> GetModel(String format, String override, MTGUser mtgUser) {
-        List<MTGCard> mtgCardList = mtgCardService.UpdateCardValues(override);
+    public List<CardViewModel> GetModel(String format, MTGUser mtgUser) {
+        List<MTGCard> mtgCardList = mtgCardService.getcollection();
         List<MTGCollectionAsset> mtgCollectionAssetList = mtgCollectionAssetRepository.findAllByUserID(mtgUser.getId());
         mtgCollectionAssetList = mtgCollectionAssetList.stream().filter(asset -> asset.getQuantity() != 0).collect(Collectors.toList());
         List<CardViewModel> cardViewModelList = GetModelCollection(mtgCardList, mtgCollectionAssetList);

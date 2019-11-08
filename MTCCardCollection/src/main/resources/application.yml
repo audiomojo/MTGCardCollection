@@ -1,0 +1,8 @@
+com:
+  xantech:
+    mtgcardcollection:
+        schedules:
+          updateCardValueInterval: 21600000
+          getInitialDelay: 1000
+        mtggoldfish:
+          throttelingPause:1000

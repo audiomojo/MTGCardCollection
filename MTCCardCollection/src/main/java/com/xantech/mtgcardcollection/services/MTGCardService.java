@@ -10,8 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,7 +35,7 @@ public class MTGCardService {
     @Autowired
     MTGGoldFishCardValueEngine mtgGoldFishCardValueEngine;
 
-    public MTGCardDTO LookupCard(String url, MTGUser mtgUser) {
+    public MTGCardDTO lookupCard(String url, MTGUser mtgUser) {
         MTGCard mtgCard = mtgCardRepository.findDistinctByMtgGoldfishURL(url);
         MTGCollectionAsset mtgCollectionAsset = null;
 
@@ -44,9 +46,9 @@ public class MTGCardService {
         return mtgCardDTOService.AssembleMTGCardDTO(mtgCard, mtgCollectionAsset, mtgUser);
     }
 
-    public MTGCardDTO AdjustCollection(CollectionAdjustment adjustment, String url, int count, String notes, MTGUser mtgUser) {
+    public MTGCardDTO adjustcollection(CollectionAdjustment adjustment, String url, int count, String notes, MTGUser mtgUser) {
         Date date = new Date();
-        MTGCard mtgCard = GetMTGCard(url, date);
+        MTGCard mtgCard = getMTGCard(url, date);
         MTGCollectionAsset mtgCollectionAsset = null;
 
         if (adjustment == CollectionAdjustment.ADD) {
@@ -59,17 +61,17 @@ public class MTGCardService {
         return mtgCardDTOService.AssembleMTGCardDTO(mtgCard, mtgCollectionAsset, mtgUser);
     }
 
-    private MTGCard GetMTGCard(String url, Date date) {
+    private MTGCard getMTGCard(String url, Date date) {
         MTGCard mtgCard = mtgCardRepository.findDistinctByMtgGoldfishURL(url);
 
         if (mtgCard == null){
-            mtgCard = CreateMTGCard(url, date);
+            mtgCard = createMTGCard(url, date);
         }
         return mtgCard;
     }
 
 
-    private MTGCard CreateMTGCard(String url, Date date) {
+    private MTGCard createMTGCard(String url, Date date) {
         MTGCard mtgCard =  new MTGCard();
         mtgCard.setBlock(MTGGoldfishURLParser.GetBlock(url));
         mtgCard.setCard(MTGGoldfishURLParser.GetCard(url));
@@ -91,22 +93,22 @@ public class MTGCardService {
         return mtgCard;
     }
 
-    private void UpdateCardValueMetrics(MTGCard mtgCard, Date date) {
+    private void updateCardValueMetrics(MTGCard mtgCard, Date date) {
         List<MTGCardValueHistory> mtgCardValueHistoryList = mtgCardValueHistoryService.GetMTGCardValueHistory(mtgCard);
         mtgCard.setLastValueCheck(date);
-        mtgCard.setTwentyFourHourValueShift(CalculateValueShift(mtgCardValueHistoryList,1));
-        mtgCard.setTwentyFourHourPercentageShift(CalculatePercentageShift(mtgCardValueHistoryList,1));
-        mtgCard.setSevenDayValueShift(CalculateValueShift(mtgCardValueHistoryList, 7));
-        mtgCard.setSevenDayHourPercentageShift(CalculatePercentageShift(mtgCardValueHistoryList, 7));
-        mtgCard.setThirtyDayValueShift(CalculateValueShift(mtgCardValueHistoryList, 30));
-        mtgCard.setThirtyDayPercentageShift(CalculatePercentageShift(mtgCardValueHistoryList, 30));
-        mtgCard.setAllTimeValueShift(CalculateValueShift(mtgCardValueHistoryList, mtgCardValueHistoryList.size()-1));
-        mtgCard.setAllTimePercentageShift(CalculatePercentageShift(mtgCardValueHistoryList, mtgCardValueHistoryList.size()-1));
+        mtgCard.setTwentyFourHourValueShift(calculateValueShift(mtgCardValueHistoryList,1));
+        mtgCard.setTwentyFourHourPercentageShift(calculatePercentageShift(mtgCardValueHistoryList,1));
+        mtgCard.setSevenDayValueShift(calculateValueShift(mtgCardValueHistoryList, 7));
+        mtgCard.setSevenDayHourPercentageShift(calculatePercentageShift(mtgCardValueHistoryList, 7));
+        mtgCard.setThirtyDayValueShift(calculateValueShift(mtgCardValueHistoryList, 30));
+        mtgCard.setThirtyDayPercentageShift(calculatePercentageShift(mtgCardValueHistoryList, 30));
+        mtgCard.setAllTimeValueShift(calculateValueShift(mtgCardValueHistoryList, mtgCardValueHistoryList.size()-1));
+        mtgCard.setAllTimePercentageShift(calculatePercentageShift(mtgCardValueHistoryList, mtgCardValueHistoryList.size()-1));
         mtgCard.setMostRecentValue(mtgCardValueHistoryList.get(0).getValue());
         mtgCardRepository.save(mtgCard);
     }
 
-    private double CalculateValueShift(List<MTGCardValueHistory> mtgCardValueHistoryList, int days){
+    private double calculateValueShift(List<MTGCardValueHistory> mtgCardValueHistoryList, int days){
         double valueShift = 0.0;
 
         if ((days > 0) && (mtgCardValueHistoryList.size() >= days+1)){
@@ -116,7 +118,7 @@ public class MTGCardService {
         return valueShift;
     }
 
-    private double CalculatePercentageShift(List<MTGCardValueHistory> mtgCardValueHistoryList, int days){
+    private double calculatePercentageShift(List<MTGCardValueHistory> mtgCardValueHistoryList, int days){
         double valueShift = 0.0;
 
         if ((days > 0) && (mtgCardValueHistoryList.size() >= days+1)){
@@ -126,27 +128,20 @@ public class MTGCardService {
         return valueShift;
     }
 
-    public List<MTGCard> UpdateCardValues(String override){
+    public List<MTGCard> getcollection() {
+        return mtgCardRepository.findAllBy();
+    }
+
+    public List<MTGCard> updateCardValues(){
         List<MTGCard> mtgCardList = mtgCardRepository.findAllBy();
-        int index = 1;
         Date date = new Date();
-        long nowTime = date.getTime();
+        int index = 1;
+
+        mtgCardList = mtgCardList.stream().sorted(Comparator.comparing(MTGCard::getCard)).sorted(Comparator.comparing(MTGCard::getBlock)).collect(Collectors.toList());
 
         for (MTGCard mtgCard : mtgCardList) {
-            long lastUpdateTime = mtgCard.getLastValueCheck().getTime();
-            long timeDiff = nowTime-lastUpdateTime;
-            if ((timeDiff > 28800000) || (override.compareTo("TRUE") == 0)) { // 3Hours 10800000; 8 Hours: 28800000
-                System.out.println(index++ + " of " + mtgCardList.size() + " : " + mtgCard.toString());
-                updateCardValue(mtgCard, date);
-//                try {
-//                    Thread.sleep(100);
-//                } catch (InterruptedException ex) {
-//                    System.out.println("Thread Exception: " + ex.toString());
-//                }
-            }
-            else
-                System.out.println(index++ + " of " + mtgCardList.size() + " : [Have Recent Value] -- " + mtgCard.toString());
-
+            log.info("Updating card value [" + index++ + " of " + mtgCardList.size() + "] --- " + mtgCard.toString());
+            updateCardValue(mtgCard, date);
         }
 
         return mtgCardList;
@@ -154,7 +149,7 @@ public class MTGCardService {
 
     private void updateCardValue(MTGCard mtgCard, Date date){
         mtgCardValueHistoryService.updateCardValue(mtgCard, date);
-        UpdateCardValueMetrics(mtgCard, date);
+        updateCardValueMetrics(mtgCard, date);
     }
 
     public MTGCard getMTGCardByID(long cardID) {

@@ -1,5 +1,6 @@
 package com.xantech.mtgcardcollection.services;
 
+import com.xantech.mtgcardcollection.config.MTGGoldfishHarvestProperties;
 import com.xantech.mtgcardcollection.dao.*;
 import com.xantech.mtgcardcollection.helpers.MTGGoldFishCardValueEngine;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +23,15 @@ public class MTGCardValueHistoryService {
     @Autowired
     MTGCardRepository mtgCardRepository;
 
+    @Autowired
+    MTGGoldfishHarvestProperties mtgGoldfishHarvestProperties;
+
     private MTGCardValueHistory mtgCardValueHistory;
 
     public MTGCardValueHistory updateCardValue(MTGCard mtgCard, Date date) {
         int tries = 0;
         double cardValue = 0;
-        int sleepCount = 1000;
+        int sleepCount = mtgGoldfishHarvestProperties.getThrottelingPause();
         int maxTries = 30;
 
         do {

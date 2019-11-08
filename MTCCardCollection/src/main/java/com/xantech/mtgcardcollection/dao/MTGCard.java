@@ -28,4 +28,9 @@ public class MTGCard extends AbstractEntity {
     private Date lastValueCheck;
     private double mostRecentValue;
     private String imageURL;
+
+    @Override
+    public String toString(){
+        return card.replace('+', ' ') + " [" + block.replace('+',' ') + "]";
+    }
 }
