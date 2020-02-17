@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Table V04</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" type="text/css" href="css/topnav.css">
+<!--===============================================================================================-->
+	<!--[if lte IE 8]><script th:src="@{/css/ie/html5shiv.js"}></script><![endif]-->
+	<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+	<script src="js/collection-summary.js" type="text/javascript"></script>
+</head>
+<body>
+	<div class="text-center">
+		<header class="major">
+			<h2>Collection Summary</h2>
+			<div id="total-value">Total Collection Value: </div>
+			<div id="report-type">Sorted by 24 Hour Value Change</div>
+			<br>
+			<br>
+			<div class="topnav">
+				<a class="active" href="javascript:LoadCollection()" >Alphabetic</a>
+				<a href="javascript:LoadCollection('PRICE')" >Price</a>
+				<a href="javascript:LoadCollection('DAY-VALUE-CHANGE')" >24 Hour Value $ Shift</a>
+				<a href="javascript:LoadCollection('DAY-PERCENT-CHANGE')" >24 Hour Value % Shift</a>
+				<a href="javascript:LoadCollection('7-DAY-VALUE-CHANGE')" >7-Day Value $ Shift</a>
+				<a href="javascript:LoadCollection('7-DAY-PERCENT-CHANGE')" >7-Day Value % Shift</a>
+				<a href="javascript:LoadCollection('30-DAY-VALUE-CHANGE')" >30-Day Value $ Shift</a>
+				<a href="javascript:LoadCollection('30-DAY-PERCENT-CHANGE')" >30-Day Value % Shift</a>
+				<a href="javascript:LoadCollection('ALL-TIME-VALUE-CHANGE')" >All Time Value $ Shift</a>
+				<a href="javascript:LoadCollection('ALL-TIME-PERCENT-CHANGE')" >All Time Value % Shift</a>
+			</div>
+		</header>
+	</div>
+	<div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100">
+				<div class="table100 ver5 m-b-110">
+					<div class="table100-head">
+						<table>
+							<thead>
+								<tr class="row100 head">
+									<th class="cell100 column1">Card</th>
+									<th class="cell100 column2">Block</th>
+									<th class="cell100 column3">Value</th>
+									<th class="cell100 column4">Quantity</th>
+									<th class="cell100 column5">Collection Value</th>
+									<th class="cell100 column6">24 Hour $Δ</th>
+									<th class="cell100 column7">24 Hour %Δ</th>
+									<th class="cell100 column8">7 Day $Δ</th>
+									<th class="cell100 column9">7 Day %Δ</th>
+									<th class="cell100 column10">30 Day $Δ</th>
+									<th class="cell100 column11">30 Day %Δ</th>
+									<th class="cell100 column12">All Time $Δ</th>
+									<th class="cell100 column13">All Time %Δ</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+
+					<div class="table100-body js-pscroll">
+						<table>
+							<tbody id="collection-data">
+								<tr class="row100 body">
+									<td class="cell100 column1">Baneslayer+Angel</td>
+									<td class="cell100 column2">From+the+Vault+Angels:Foil</td>
+									<td class="cell100 column3">$13.22</td>
+									<td class="cell100 column4">1</td>
+									<td>$13.22</td>
+									<td>$1.78</td>
+									<td>15.56%</td>
+									<td>$2.31</td>
+									<td>21.17%</td>
+									<td>$2.74</td>
+									<td>26.15%</td>
+									<td>$5.00</td>
+									<td>60.83%</td>
+								</tr>
+								<tr class="row100 body">
+									<td class="cell100 column1">Athreos+God+of+Passage</td>
+									<td class="cell100 column2">Journey+into+Nyx</td>
+									<td class="cell100 column3">$17.78</td>
+									<td class="cell100 column4">1</td>
+									<td>$17.78</td>
+									<td>($0.05)</td>
+									<td>-0.28%</td>
+									<td>$1.91</td>
+									<td>12.04%</td>
+									<td>$3.49</td>
+									<td>24.42%</td>
+									<td>$4.84</td>
+									<td>37.4%</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+<!--===============================================================================================-->	
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			var ps = new PerfectScrollbar(this);
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+		});
+			
+		
+	</script>
+<!--===============================================================================================-->
+	<!--<script src="js/main.js"></script>-->
+	<!--<script>-->
+        <!--FormatValueShifts();-->
+	<!--</script>-->
+	<script>
+        var host = 'http://localhost:8090';
+        //var host = 'http://macbook-pro:8090';
+		const reportTypes = {
+		    ALPHA: "Alpha",
+			SEVENDAYVALUE: "7-DAY-VALUE-CHANGE",
+			SEVENDAYPERCENT: "7DayPercent",
+			ALLTIMEVALUE: "AllTimeValue",
+			ALLTIMEPERCENT: "AllTimePercent"
+		}
+
+		function LoadCollectionValue() {
+            $.ajax({
+                url: host + '/totalCollectionValue',
+                data: { }, // No Params to pass
+                success: function(data) {
+                    document.getElementById("total-value").innerText = "Total Collection Value: " + data;
+                }
+            });
+        }
+
+        function FormatTableRowHTML(row) {
+        	var resultHTML = "<tr class=\"row100 body\">\n";
+            //console.log(row);
+
+
+            resultHTML += "\t<td class=\"cell100 column1\">" + row.card + "</td>\n";
+            resultHTML += "\t<td class=\"cell100 column2\">" + row.block + "</td>\n";
+        	resultHTML += "\t<td class=\"cell100 column3\">" + row.valueStr + "</td>\n";
+        	resultHTML += "\t<td class=\"cell100 column4 text-center\">" + row.quantity + "</td>\n";
+        	resultHTML += "\t<td class=\"cell100 column5 text-center\">" + row.totalValueStr + "</td>\n";
+        	resultHTML += "\t<td class=\"cell100 column6 text-center\">" + row.twentyFourHourValueShiftStr + "</td>\n";
+        	resultHTML += "\t<td class=\"cell100 column7 text-center\">" + row.twentyFourHourPercentageShiftStr + "</td>\n";
+        	resultHTML += "\t<td class=\"cell100 column8 text-center\">" + row.sevenDayValueShiftStr + "</td>\n";
+        	resultHTML += "\t<td class=\"cell100 column9 text-center\">" + row.sevenDayPercentageShiftStr + "</td>\n";
+        	resultHTML += "\t<td class=\"cell100 column10 text-center\">" + row.thirtyDayValueShiftStr + "</td>\n";
+        	resultHTML += "\t<td class=\"cell100 column11 text-center\">" + row.thirtyDayPercentageShiftStr + "</td>\n";
+        	resultHTML += "\t<td class=\"cell100 column12 text-center\">" + row.allTimeValueShiftStr + "</td>\n";
+        	resultHTML += "\t<td class=\"cell100 column13 text-center\">" + row.allTimePercentageShiftStr + "</td>\n";
+        	resultHTML += "</tr>\n";
+
+			return resultHTML;
+        }
+
+        function FormatTableHTML(data) {
+            var resultHTML = '';
+			for (var i = 0; i < data.length; i++) {
+				resultHTML += FormatTableRowHTML(data[i]);
+			}
+			document.getElementById("collection-data").innerHTML = resultHTML;
+        }
+
+        function FormatValueShifts() {
+            var table = document.getElementById('collection-data');
+            var cells = null;
+            var rowCount = table.rows.length;
+
+            // console.log("Row Count: " + table.rows.length);
+
+            for (var i = 1; i != rowCount-1; ++i) {
+                // console.log("Row: " + table.rows[i].innerHTML);
+                cells = table.rows[i].cells;
+                FormatCell(cells[5], cells[6]);
+                FormatCell(cells[7], cells[8]);
+                FormatCell(cells[9], cells[10]);
+                FormatCell(cells[11], cells[12]);
+            }
+        }
+
+        function FormatCell(cell1, cell2){
+            // console.log("Cell1: " + cell1.innerHTML);
+            // console.log("Cell2: " + cell2.innerHTML);
+
+            var value = parseFloat(cell2.innerHTML);
+            // console.log("Cell2 Parsed: " + value);
+
+            if (value < 0) {
+                cell1.style.backgroundColor = "#ffafa7";
+                cell2.style.backgroundColor = "#ffafa7";
+            }
+            else if(value > 0){
+                cell1.style.backgroundColor = "#83ff7a";
+                cell2.style.backgroundColor = "#83ff7a";
+            }
+        }
+
+
+        function FormatReportType(param) {
+            var divElement = document.getElementById("report-type");
+
+            if (param === undefined) {
+                divElement.innerText = "Report Type: Alpha";
+            } else if (param === "PRICE") {
+                divElement.innerText = "Report Type: Price";
+            } else if (param === "24-HOUR-VALUE-CHANGE") {
+                divElement.innerText = "Report Type: 7 Day Value $ Change";
+            } else if (param === "24-HOUR-PERCENT-CHANGE") {
+                divElement.innerText = "Report Type: 7 Day Value % Change";
+            } else if (param === "7-DAY-VALUE-CHANGE") {
+                divElement.innerText = "Report Type: 7 Day Value $ Change";
+            } else if (param === "7-DAY-PERCENT-CHANGE") {
+                divElement.innerText = "Report Type: 7 Day Value % Change";
+            } else if (param === "30-DAY-VALUE-CHANGE") {
+                divElement.innerText = "Report Type: 30 Day Value $ Change";
+            } else if (param === "30-DAY-PERCENT-CHANGE") {
+                divElement.innerText = "Report Type: 30 Day Value % Change";
+            } else if (param === "ALL-TIME-VALUE-CHANGE") {
+                divElement.innerText = "Report Type: All Time Value $ Change";
+            } else if (param === "ALL-TIME-PERCENT-CHANGE") {
+                divElement.innerText = "Report Type: All Time Value % Change";
+			}
+
+        }
+
+        function LoadCollection(param) {
+            $.ajax({
+                url: host + '/collectionModel',
+                data: { format: param }, // No Params to pass
+                success: function(data) {
+                    //console.log(data);
+
+                    FormatTableHTML(data);
+                    FormatValueShifts();
+                    FormatReportType(param);
+                }
+            });
+        }
+
+        function Initialize() {
+            LoadCollectionValue();
+            LoadCollection();
+        }
+
+        window.onload = function() {
+            Initialize(reportTypes.ALPHA);
+        }
+	</script>
+
+</body>
+</html>

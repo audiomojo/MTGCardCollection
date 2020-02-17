@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface MTGCardRepository extends JpaRepository<MTGCard, Long> {
     MTGCard findDistinctByMtgGoldfishURL(String url);
     List<MTGCard> findAllBy();
