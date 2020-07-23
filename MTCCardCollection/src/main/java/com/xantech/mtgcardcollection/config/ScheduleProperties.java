@@ -10,4 +10,5 @@ import org.springframework.stereotype.Component;
 public class ScheduleProperties {
     private int updateCardValueInterval;
     private int getInitialDelay;
+    private int dataValidInterval;
 }

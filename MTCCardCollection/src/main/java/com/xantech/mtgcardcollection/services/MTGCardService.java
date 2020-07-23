@@ -1,5 +1,6 @@
 package com.xantech.mtgcardcollection.services;
 
+import com.xantech.mtgcardcollection.config.ScheduleProperties;
 import com.xantech.mtgcardcollection.dao.*;
 import com.xantech.mtgcardcollection.dto.MTGCardDTO;
 import com.xantech.mtgcardcollection.enums.CollectionAdjustment;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +36,9 @@ public class MTGCardService {
 
     @Autowired
     MTGGoldFishCardValueEngine mtgGoldFishCardValueEngine;
+
+    @Autowired
+    ScheduleProperties scheduleProperties;
 
     public MTGCardDTO lookupCard(String url, MTGUser mtgUser) {
         MTGCard mtgCard = mtgCardRepository.findDistinctByMtgGoldfishURL(url);
@@ -141,10 +146,17 @@ public class MTGCardService {
 
         for (MTGCard mtgCard : mtgCardList) {
             log.info("Updating card value [" + index++ + " of " + mtgCardList.size() + "] --- " + mtgCard.toString());
-            updateCardValue(mtgCard, date);
+            if (updatedValueNeeded(mtgCard,date)) {
+                updateCardValue(mtgCard, date);
+            }
         }
 
         return mtgCardList;
+    }
+
+    private boolean updatedValueNeeded(MTGCard mtgCard, Date date) {
+        Long diff = date.getTime() - mtgCard.getLastValueCheck().getTime();
+        return diff > scheduleProperties.getDataValidInterval();
     }
 
     private void updateCardValue(MTGCard mtgCard, Date date){

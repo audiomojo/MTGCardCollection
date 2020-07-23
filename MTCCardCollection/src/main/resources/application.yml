@@ -4,5 +4,6 @@ com:
         schedules:
           updateCardValueInterval: 21600000
           getInitialDelay: 1000
+          dataValidInterval: 7200000
         mtggoldfish:
           throttelingPause:1000
