@@ -25,17 +25,23 @@ public class ScreenScrapeCardValueMTGGoldfish implements ScreenScrapeCardValue {
             if (document.outerHtml().contains("Throttled")) {
                 System.out.print("ERROR -- Throttled: ");
             } else {
-
-                if (format.compareTo("paper") == 0)
+                boolean isPaper = format.compareTo("paper") == 0;
+                if (isPaper)
                     priceDiv = document.body().getElementsByClass("price-box paper");
-                else
+                else {
                     priceDiv = document.body().getElementsByClass("price-box online");
+                    log.info("Non-Paper Card: " + url);
+                }
 
                 if (priceDiv != null && priceDiv.size() > 0) {
 
                     for (Element element : priceDiv.first().children()) {
-                        if (element.className().compareTo("price-box-price") == 0)
-                            price = element.text().substring(2);
+                        if (element.className().compareTo("price-box-price") == 0) {
+                            if (isPaper)
+                                price = element.text().substring(2);
+                            else
+                                price = element.text().substring(0, element.text().length()-4);
+                        }
                     }
                 } else {
                     price = "-1.0"; // MTGGoldFish had a glitch and did not have the proper price div.  Setting to -1 to prevent infinite "Throttled" loop.
