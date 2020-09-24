@@ -35,7 +35,7 @@ public class ScreenScrapeCardValueMTGGoldfish implements ScreenScrapeCardValue {
 
                     for (Element element : priceDiv.first().children()) {
                         if (element.className().compareTo("price-box-price") == 0)
-                            price = element.text();
+                            price = element.text().substring(2);
                     }
                 } else {
                     price = "-1.0"; // MTGGoldFish had a glitch and did not have the proper price div.  Setting to -1 to prevent infinite "Throttled" loop.
