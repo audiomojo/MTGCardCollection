@@ -35,13 +35,18 @@ public class ScreenScrapeCardValueMTGGoldfish implements ScreenScrapeCardValue {
 
                 if (priceDiv != null && priceDiv.size() > 0) {
 
-                    for (Element element : priceDiv.first().children()) {
-                        if (element.className().compareTo("price-box-price") == 0) {
-                            if (isPaper)
-                                price = element.text().substring(2);
-                            else
-                                price = element.text().substring(0, element.text().length()-4);
+                    try {
+                        for (Element element : priceDiv.first().children()) {
+                            if (element.className().compareTo("price-box-price") == 0) {
+                                if (isPaper)
+                                    price = element.text().substring(2);
+                                else
+                                    price = element.text().substring(0, element.text().length() - 4);
+                            }
                         }
+                    } catch (IndexOutOfBoundsException ex) {
+                        log.error("Error referencing an index that is out of bounds");
+                        price = "-1.0";
                     }
                 } else {
                     price = "-1.0"; // MTGGoldFish had a glitch and did not have the proper price div.  Setting to -1 to prevent infinite "Throttled" loop.

@@ -109,7 +109,11 @@ public class MTGCardService {
         mtgCard.setThirtyDayPercentageShift(calculatePercentageShift(mtgCardValueHistoryList, 30));
         mtgCard.setAllTimeValueShift(calculateValueShift(mtgCardValueHistoryList, mtgCardValueHistoryList.size()-1));
         mtgCard.setAllTimePercentageShift(calculatePercentageShift(mtgCardValueHistoryList, mtgCardValueHistoryList.size()-1));
-        mtgCard.setMostRecentValue(mtgCardValueHistoryList.get(0).getValue());
+        try {
+            mtgCard.setMostRecentValue(mtgCardValueHistoryList.get(0).getValue());
+        } catch (IndexOutOfBoundsException ex) {
+            log.error("Error:  Card Value History List is empty for " + mtgCard.getCard());
+        }
         mtgCardRepository.save(mtgCard);
     }
 

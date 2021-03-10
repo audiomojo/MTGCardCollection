@@ -32,7 +32,7 @@ public class MTGCardValueHistoryService {
         int tries = 0;
         double cardValue = 0;
         int sleepCount = mtgGoldfishHarvestProperties.getThrottelingPause();
-        int maxTries = 30;
+        int maxTries = 5;
 
         do {
             cardValue = mtgGoldFishCardValueEngine.getCardValue(mtgCard);
@@ -60,8 +60,11 @@ public class MTGCardValueHistoryService {
         mtgCardValueHistory.setValue(cardValue);
         mtgCard.setMostRecentValue(cardValue);
         mtgCard.setLastValueCheck(date);
-        mtgCardRepository.save(mtgCard);
-        mtgCardValueHistoryRepository.save(mtgCardValueHistory);
+
+        if (cardValue > 0) {
+            mtgCardRepository.save(mtgCard);
+            mtgCardValueHistoryRepository.save(mtgCardValueHistory);
+        }
 
         return mtgCardValueHistory;
     }

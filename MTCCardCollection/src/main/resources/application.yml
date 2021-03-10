@@ -2,8 +2,8 @@ com:
   xantech:
     mtgcardcollection:
         schedules:
-          updateCardValueInterval: 21600000
+          updateCardValueInterval: 3600000
           getInitialDelay: 1000
-          dataValidInterval: 7200000
+          dataValidInterval: 18000000
         mtggoldfish:
-          throttelingPause:1000
+          throttelingPause: 1500

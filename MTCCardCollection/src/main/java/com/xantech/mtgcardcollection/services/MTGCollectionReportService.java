@@ -44,6 +44,8 @@ public class MTGCollectionReportService {
             SortBlockCard(cardViewModelList);
         else if (format.compareTo("PRICE") == 0)
             SortPrice(cardViewModelList);
+        else if (format.compareTo("BLOCK") == 0)
+            SortBlock(cardViewModelList);
         else if (format.compareTo("DAY-VALUE-CHANGE") == 0)
             SortDayValueChange(cardViewModelList);
         else if (format.compareTo("7-DAY-VALUE-CHANGE") == 0)
@@ -75,6 +77,10 @@ public class MTGCollectionReportService {
 
     private void SortPrice(List<CardViewModel> cardViewModelList) {
         Collections.sort(cardViewModelList, new SortByPrice());
+    }
+
+    private void SortBlock(List<CardViewModel> cardViewModelList) {
+        Collections.sort(cardViewModelList, new SortByBlockCard());
     }
 
     private void SortDayValueChange(List<CardViewModel> cardViewModelList) {

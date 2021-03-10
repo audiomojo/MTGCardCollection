@@ -36,6 +36,7 @@
 			<div class="topnav">
 				<a class="active" href="javascript:LoadCollection()" >Alphabetic</a>
 				<a href="javascript:LoadCollection('PRICE')" >Price</a>
+				<a href="javascript:LoadCollection('BLOCK')" >Block</a>
 				<a href="javascript:LoadCollection('DAY-VALUE-CHANGE')" >24 Hour Value $ Shift</a>
 				<a href="javascript:LoadCollection('DAY-PERCENT-CHANGE')" >24 Hour Value % Shift</a>
 				<a href="javascript:LoadCollection('7-DAY-VALUE-CHANGE')" >7-Day Value $ Shift</a>
@@ -145,6 +146,7 @@
         //var host = 'http://macbook-pro:8090';
 		const reportTypes = {
 		    ALPHA: "Alpha",
+			BLOCK: "Block",
 			SEVENDAYVALUE: "7-DAY-VALUE-CHANGE",
 			SEVENDAYPERCENT: "7DayPercent",
 			ALLTIMEVALUE: "AllTimeValue",
@@ -232,8 +234,10 @@
 
             if (param === undefined) {
                 divElement.innerText = "Report Type: Alpha";
-            } else if (param === "PRICE") {
-                divElement.innerText = "Report Type: Price";
+			} else if (param === "PRICE") {
+				divElement.innerText = "Report Type: Price";
+			} else if (param === "Block") {
+				divElement.innerText = "Report Type: Block";
             } else if (param === "24-HOUR-VALUE-CHANGE") {
                 divElement.innerText = "Report Type: 7 Day Value $ Change";
             } else if (param === "24-HOUR-PERCENT-CHANGE") {
