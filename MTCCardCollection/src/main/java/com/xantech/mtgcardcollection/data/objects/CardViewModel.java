@@ -35,11 +35,9 @@ public class CardViewModel {
     private String url;
     private String imageUrl;
 
-    public CardViewModel() {}
-
     public CardViewModel(MTGCollectionAsset mtgCollectionAsset, MTGCard mtgCard){
         this.setBlock(mtgCard.getBlock());
-        this.setCard(mtgCard.getCard());
+        this.setCard(AssembelMTGCardHyperlink(mtgCard));
         this.setFormat(mtgCard.getFormat());
         this.setQuantity(Integer.toString(mtgCollectionAsset.getQuantity()));
         this.setValue(mtgCard.getMostRecentValue());
@@ -64,6 +62,10 @@ public class CardViewModel {
         this.setAllTimePercentageShiftStr(TextFormatting.FormatAsPercentage(mtgCard.getAllTimePercentageShift()));
         this.setUrl(mtgCard.getMtgGoldfishURL());
         this.setImageUrl(mtgCard.getImageURL());
+    }
+
+    private String AssembelMTGCardHyperlink(MTGCard mtgCard) {
+        return "<button onclick=\"launchCard('" + mtgCard.getMtgGoldfishURL() + "')\">" + mtgCard.getCard() + "</button>";
     }
 
     public String toString() {

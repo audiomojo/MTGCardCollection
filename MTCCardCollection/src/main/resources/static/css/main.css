@@ -73,6 +73,8 @@ textarea:focus, input:focus {
 
 /* ------------------------------------ */
 button {
+    font-family: Lato-Regular;
+    font-size: 15px;
 	outline: none !important;
 	border: none;
 	background: transparent;

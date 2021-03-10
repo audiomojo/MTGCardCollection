@@ -4,26 +4,15 @@
 	<title>Table V04</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->	
 	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
-<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
-<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="css/util.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<link rel="stylesheet" type="text/css" href="css/topnav.css">
-<!--===============================================================================================-->
 	<!--[if lte IE 8]><script th:src="@{/css/ie/html5shiv.js"}></script><![endif]-->
 	<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
-	<script src="js/collection-summary.js" type="text/javascript"></script>
+	<script src="/js/mtgCardLinks.js" type="text/javascript" ></script>
+
 </head>
 <body>
 	<div class="text-center">
@@ -116,31 +105,7 @@
 	</div>
 
 
-<!--===============================================================================================-->	
-	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/bootstrap/js/popper.js"></script>
-	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/select2/select2.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-	<script>
-		$('.js-pscroll').each(function(){
-			var ps = new PerfectScrollbar(this);
 
-			$(window).on('resize', function(){
-				ps.update();
-			})
-		});
-			
-		
-	</script>
-<!--===============================================================================================-->
-	<!--<script src="js/main.js"></script>-->
-	<!--<script>-->
-        <!--FormatValueShifts();-->
-	<!--</script>-->
 	<script>
         var host = 'http://localhost:8090';
         //var host = 'http://macbook-pro:8090';

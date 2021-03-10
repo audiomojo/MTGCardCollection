@@ -14,7 +14,7 @@
 		background: #fff;
 	}
 
-	body, input, select, textarea {
+	body, input, select, textarea, button {
 		color: #444;
 		font-family: "Lato", Helvetica, sans-serif;
 		font-size: 15pt;
