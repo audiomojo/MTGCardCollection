@@ -1,10 +1,13 @@
 package com.xantech.mtgcardcollection.data.objects;
 
+import com.xantech.mtgcardcollection.config.CollectionSummaryProperties;
 import com.xantech.mtgcardcollection.dao.MTGCard;
 import com.xantech.mtgcardcollection.dao.MTGCollectionAsset;
 import com.xantech.mtgcardcollection.dao.MTGDeckAsset;
 import com.xantech.mtgcardcollection.helpers.TextFormatting;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Data
 public class CardViewModel {
@@ -65,7 +68,10 @@ public class CardViewModel {
     }
 
     private String AssembelMTGCardHyperlink(MTGCard mtgCard) {
-        return "<button onclick=\"launchCard('" + mtgCard.getMtgGoldfishURL() + "')\">" + mtgCard.getCard() + "</button>";
+        StringBuilder result = new StringBuilder("<button onclick=\"launchCard('" + mtgCard.getMtgGoldfishURL() + "')\">" + mtgCard.getCard());
+        result.append(" [DB ID:" + mtgCard.getId() + "]");
+        result.append("</button>");
+        return result.toString();
     }
 
     public String toString() {

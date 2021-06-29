@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -23,5 +24,6 @@ public class UpdateCardValues {
     public List<MTGCard> updateCardValues(){
         log.info(" *** <Executing Scheduled Task> *** : Updating Card Collection Values");
         return mtgCardService.updateCardValues();
+        //return new ArrayList<>();
     }
 }

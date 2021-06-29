@@ -8,10 +8,12 @@ import com.xantech.mtgcardcollection.helpers.MTGGoldFishCardValueEngine;
 import com.xantech.mtgcardcollection.helpers.MTGGoldfishURLParser;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTimeComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -159,8 +161,13 @@ public class MTGCardService {
     }
 
     private boolean updatedValueNeeded(MTGCard mtgCard, Date date) {
-        Long diff = date.getTime() - mtgCard.getLastValueCheck().getTime();
-        return diff > scheduleProperties.getDataValidInterval();
+        DateTimeComparator dateTimeComparator = DateTimeComparator.getDateOnlyInstance();
+        if (dateTimeComparator.compare(date, mtgCard.getLastValueCheck()) == 0)
+            return false;
+        else
+            return true;
+//        Long diff = date.getTime() - mtgCard.getLastValueCheck().getTime();
+//        return diff > scheduleProperties.getDataValidInterval();
     }
 
     private void updateCardValue(MTGCard mtgCard, Date date){

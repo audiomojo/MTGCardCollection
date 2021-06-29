@@ -8,9 +8,13 @@ import com.xantech.mtgcardcollection.factories.GoldfishTCGUrlConversionDTOFactor
 import com.xantech.mtgcardcollection.helpers.ScreenScrapeCardValueTCGPlayer;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -116,5 +120,80 @@ public class MTGCardCollectionAdminService {
         }
 
         return mtgGoldfishURLUpdateDTO;
+    }
+
+    public String fixPromoURLs() {
+        List<MTGCard> mtgCardList = mtgCardRepository.findAllBy();
+        List<MTGCard> badURLList = getBadURLs(mtgCardList);
+        return "Number of fixed URLs: " + badURLList.size();
+    }
+
+    private List<MTGCard> getBadURLs(List<MTGCard> mtgCardList) {
+        List<MTGCard> badURLList = new ArrayList<>();
+
+        mtgCardList.stream().forEach(mtgCard -> checkForPromoURL(mtgCard, badURLList));
+
+        return badURLList;
+    }
+
+    private void checkForPromoURL(MTGCard mtgCard, List<MTGCard> badURLList) {
+        Document document;
+        if ((mtgCard.getBlock().contains("Promos") ||
+                (mtgCard.getMtgGoldfishURL().contains("Promos")))) {
+            try {
+                System.out.println("Checking Card: " + mtgCard.getMtgGoldfishURL());
+                document = Jsoup.connect(mtgCard.getMtgGoldfishURL()).get();
+                if (document.text().contains("Throttled"))
+                    System.out.println("Throttled: " + mtgCard.getMtgGoldfishURL());
+            } catch (IOException ex1) {
+                System.out.println("Error Getting Value for: " + mtgCard.getMtgGoldfishURL());
+                mtgCard.setMtgGoldfishURL(mtgCard.getMtgGoldfishURL().replaceAll("\\+Promos", ""));
+
+                try {
+                    document = Jsoup.connect(mtgCard.getMtgGoldfishURL()).get();
+                    if (document.text().contains("Throttled")) {
+                        System.out.println("Throttled: " + mtgCard.getMtgGoldfishURL());
+                    } else {
+                        System.out.println("Success updating URL: " + mtgCard.getMtgGoldfishURL());
+                        mtgCardRepository.save(mtgCard);
+                        badURLList.add(mtgCard);
+                    }
+                } catch (IOException ex2) {
+                    System.out.println("New URL has errors: " + mtgCard.getMtgGoldfishURL());
+                }
+            }
+        }
+    }
+
+    public List<MTGCard> verifyMTGGoldfishURLs() {
+        List<MTGCard> mtgCardList = mtgCardRepository.findAllBy();
+        List<MTGCard> badURLList = new ArrayList<>();
+        List<MTGCard> retryList = new ArrayList<>();
+
+        mtgCardList.stream().forEach(mtgCard -> validateURL(mtgCard, badURLList, retryList));
+
+        while (retryList.size() > 0) {
+            mtgCardList.clear();
+            retryList.stream().forEach(mtgCard -> mtgCardList.add(mtgCard));
+            retryList.clear();
+            mtgCardList.stream().forEach(mtgCard -> validateURL(mtgCard, badURLList, retryList));
+        }
+
+        return badURLList;
+    }
+
+    private void validateURL(MTGCard mtgCard, List<MTGCard> badURLList, List<MTGCard> retryList) {
+        Document document;
+        try {
+            System.out.println("Checking Card: " + mtgCard.getMtgGoldfishURL());
+            document = Jsoup.connect(mtgCard.getMtgGoldfishURL()).get();
+            if (document.text().contains("Throttled")) {
+                System.out.println("Throttled: " + mtgCard.getMtgGoldfishURL());
+                retryList.add(mtgCard);
+            }
+        } catch (IOException ex1) {
+            System.out.println("Error Getting Value for: " + mtgCard.getMtgGoldfishURL());
+            badURLList.add(mtgCard);
+        }
     }
 }

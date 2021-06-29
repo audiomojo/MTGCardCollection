@@ -114,5 +114,6 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:4.3.11.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.25" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aspects:4.3.11.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: joda-time:joda-time:2.10.10" level="project" />
   </component>
 </module>
